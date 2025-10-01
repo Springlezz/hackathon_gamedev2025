@@ -55,13 +55,13 @@ header {
     font-family: 'GuildensternNbp', sans-serif;
 }
 
-#menu {
+#menu-buttons {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.menu-button{
+#menu-buttons button {
     font-family: 'vcrosdmonorusbyd', 'Gill Sans', calibri;
     font-size: 24px;
     color: var(--text-color);
@@ -84,6 +84,13 @@ footer {
     color: var(--text-color);
 }
 
+#canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
 #canvas {
     display: none;
+    background-color: white;
 }

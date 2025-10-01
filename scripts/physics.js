@@ -20,7 +20,7 @@ function resolveCollision(entity1, entity2) {
         entity2.position.sub(penetrationVector);
     else if (entity2.mass === 0)
         entity1.position.add(penetrationVector);
-    else {  
+    else {
         const totalMass = entity1.mass + entity2.mass;
         entity1.position.add(penetrationVector.mult(entity2.mass / totalMass));
         entity2.position.sub(penetrationVector.mult(entity1.mass / totalMass));

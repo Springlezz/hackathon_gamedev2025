@@ -4,6 +4,10 @@ import Vector2 from './vector2.js';
 import { imageResource } from './resourcesLoader.js';
 import Texture from './texture.js';
 
+const $menu = document.getElementById('menu');
+const $playBtn = document.getElementById('play-btn');
+const $canvas = document.getElementById('canvas');
+
 const block = new Entity(new Texture(await imageResource('tile-bricks')), new Vector2(32, 32), new Vector2(100, 50));
 const player = new Entity(new Texture(await imageResource('player')), new Vector2(32, 32), new Vector2(100, 100));
 
@@ -14,25 +18,39 @@ for (let i = 0; i < 16; ++i) {
     entities.push(tile);
 }
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const ctx = $canvas.getContext('2d');
 
 function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (const entity of entities) entity.render(ctx);
     requestAnimationFrame(render);
 }
-render();
 
 function resize() {
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
+    const width = innerHeight * 16 / 9;
+    if (width <= innerWidth) {
+        $canvas.width = width;
+        $canvas.height = innerHeight;
+    }
+    else {
+        $canvas.width = innerWidth;
+        $canvas.height = innerWidth * 9 / 16;
+    }
 }
 addEventListener('resize', resize);
 resize();
 
-setInterval(() => {
-    player.position.y += 1;
-    block.position.y += 1;
-    resolveCollisions(entities);
-}, 1000 / 60);
+function start() {
+    $menu.style.display = 'none';
+    $canvas.style.display = 'block';
+
+    render();
+
+    setInterval(() => {
+        player.position.y += 1;
+        block.position.y += 1;
+        resolveCollisions(entities);
+    }, 1000 / 60);
+}
+
+$playBtn.addEventListener('click', start);

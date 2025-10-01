@@ -10,12 +10,12 @@
         <script src="/scripts/main.js" type="module" defer></script>
     </head>
     <body>
-        <main>
+        <main id="menu">
             <!-- Заголовок + шапка -->
             <header>Игра</header>
             <!-- Кнопка "Начать игру" -->
-            <div id="menu">
-                <button class="menu-button">Начать игру</button>
+            <div id="menu-buttons">
+                <button id="play-btn">Начать игру</button>
             </div>
             <!-- Футер -->
             <footer>
@@ -23,6 +23,8 @@
                 <a class="footer-link" href="https://github.com/Springlezz/hackathon_gamedev2025" target="_blank">Репозиторий</a>
             </footer>
         </main>
-        <canvas id="canvas"></canvas>
+        <div id="canvas-container">
+            <canvas id="canvas"></canvas>
+        </div>
     </body>
 </html>
