@@ -1,6 +1,6 @@
 const images = {};
 
-async function imageResource(name) {
+export async function imageResource(name) {
     if (images[name]) return images[name];
     else {
         const image = new Image();
@@ -11,7 +11,7 @@ async function imageResource(name) {
             });
             image.addEventListener('error', reject);
         });
-        image.src = name;
+        image.src = `/images/${name}.png`;
         return promise;
     }
 }

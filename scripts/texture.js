@@ -3,6 +3,7 @@ export default class Texture {
         this.image = image;
         this.width = image.width;
         this.height = image.height;
+        console.log(this.width, this.height);
     }
 
     render(ctx, position) {

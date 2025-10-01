@@ -6,6 +6,7 @@ export default class Entity {
         this.size = size;
         this.position = position;
         this.velocity = new Vector2(0, 0);
+        this.mass = 1;
     }
 
     render(ctx) {
