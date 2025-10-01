@@ -1,3 +1,18 @@
+/****** Шрифты ******/
+@font-face {
+    font-family: 'GuildensternNbp';
+    font-style: normal;
+    font-weight: normal;
+    src: url('/fonts/GuildensternNbp.ttf');
+}
+
+@font-face {
+    font-family: 'vcrosdmonorusbyd';
+    font-style: normal;
+    font-weight: normal;
+    src: url('/fonts/vcrosdmonorusbyd.ttf');
+}
+
 :root {
     --primary-color: #000000;
     --secondary-color: #517ebd;
@@ -17,8 +32,7 @@ html, body {
     width: 100%;
     height: 100%;
 }
-
-body{
+body {
     background-color: var(--background-color);
     background-image: url('/pictures/Circuit-PNG-HD-Image-2.png');
     background-repeat: no-repeat;
@@ -26,33 +40,28 @@ body{
     background-position: center;
 }
 
-
-#menu {
-    position: absolute;
-    bottom: 50%;
-    right: 50%;
-    transform: translate(50%, 50%);
+main {
+    display: flex;
+    flex-direction: column;
+    height: 100%
 }
-
-#canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.main-header{
+header {
     background-color: var(--secondary-color);
-    width: 100%;
     padding: 7px;
-    font-family: 'GuildensternNbp', sans-serif;
+    color: var(--text-color);
     font-size: 72px;
     text-align: center;
-    position: fixed;
     font-weight: bold;
-    color: var(--text-color);
+    font-family: 'GuildensternNbp', sans-serif;
 }
 
-.main-button{
+#menu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.menu-button{
     font-family: 'vcrosdmonorusbyd', 'Gill Sans', calibri;
     font-size: 24px;
     color: var(--text-color);
@@ -64,29 +73,17 @@ body{
     cursor: pointer;
 }
 
-.footer-class{
+footer {
+    padding: 20px;
     background-color: var(--darkest-color);
     color: var(--text-color);
-    padding: 20px;
     font-family: 'GuildensternNbp', sans-serif;
 }
-
 .footer-link{
     text-decoration: none;
     color: var(--text-color);
 }
 
-/****** Шрифты ******/
-@font-face {
-    font-family: 'GuildensternNbp';
-    font-style: normal;
-    font-weight: normal;
-    src: url('/fonts/GuildensternNbp.ttf');
-}
-
-@font-face {
-    font-family: 'vcrosdmonorusbyd';
-    font-style: normal;
-    font-weight: normal;
-    src: url('/fonts/vcrosdmonorusbyd.ttf');
+#canvas {
+    display: none;
 }
