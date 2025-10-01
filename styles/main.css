@@ -12,11 +12,24 @@
     font-weight: normal;
     src: url('/fonts/vcrosdmonorusbyd.ttf');
 }
+@font-face {
+    font-family: 'EpilepsySans';
+    font-style: normal;
+    font-weight: normal;
+    font-style: normal;
+    font-weight: normal;
+    src: url('/fonts/EpilepsySans.ttf');
+}
+
+@font-face {
+    font-family: 'EpilepsySansBold';
+    src: url('/fonts/EpilepsySansBold.ttf');
+}
 
 :root {
     --primary-color: #000000;
     --secondary-color: #517ebd;
-    --third-color: violet;
+    --third-color: rgb(130, 195, 238);
     --text-color: #ffffff;
     --background-color: #f1f6f9;
     --darkest-color: #312f2f;
@@ -58,8 +71,12 @@ header {
 #menu-buttons {
     flex: 1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 30px;
+
+
 }
 #menu-buttons button {
     font-family: 'vcrosdmonorusbyd', 'Gill Sans', calibri;
@@ -72,12 +89,60 @@ header {
     box-shadow: #405b96 2px 2px 2px 2px;
     cursor: pointer;
 }
+#menu-buttons button:hover {
+    background-color: var(--third-color);
+}
+
+#dialog-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    backdrop-filter: blur(2px); 
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#dialog {
+    position: relative;
+    background-color: var(--secondary-color);
+    padding: 2px;
+    width: 300px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#dialog-content{
+    font-family: 'EpilepsySans', 'Gill Sans', calibri;
+    font-size: 18px;
+    color: var(--text-color);
+    text-align: center;
+}
+
+#close-dialog{
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 30px;
+    color: var(--text-color);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
 
 footer {
     padding: 20px;
     background-color: var(--darkest-color);
     color: var(--text-color);
-    font-family: 'GuildensternNbp', sans-serif;
+    font-family: 'EpilepsySans', sans-serif;
 }
 .footer-link{
     text-decoration: none;
@@ -85,12 +150,12 @@ footer {
 }
 
 #canvas-container {
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     height: 100%;
 }
 #canvas {
-    display: none;
+    display: block;
     background-color: white;
 }
