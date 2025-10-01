@@ -6,15 +6,36 @@
         <title>Игра</title>
         <link rel="stylesheet" href="/styles/main.css">
         <script src="/scripts/index.js" type="module" defer></script>
+        <script src="/scripts/dialog-page.js" defer></script>
     </head>
     <body>
         <main id="menu">
             <!-- Заголовок + шапка -->
-            <header>Игра</header>
+            <div class="header-container">
+                <header>Игра</header>
+                <div id="header-buttons">
+                    <button>Галерея</button>
+                    <button>Об игре</button>
+                </div>
+            </div>
             <!-- Кнопка "Начать игру" -->
             <div id="menu-buttons">
                 <button id="play-btn">Начать игру</button>
+                <button id="open-dialog">Управление</button>
             </div>
+
+            <div id="dialog-container">
+                <div id="dialog">
+                    <div><button id="close-dialog">&times;</button></div>
+                    <div id="dialog-content">
+                        <h1>Управление</h1>
+                        <p>Прыжок: &uarr;</p>
+                        <p>Ходьба: &larr; &rarr;</p>
+                        <p>Взаимодействие: space</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Футер -->
             <footer>
                 <p>&copy;2025 Разработчики: 404: Команда не найдена</p>
