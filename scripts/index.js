@@ -1,28 +1,24 @@
-import Entity from './entity.js';
-import { resolveCollisions } from './physics.js';
-import Vector2 from './vector2.js';
-import { imageResource } from './resourcesLoader.js';
-import Texture from './texture.js';
+import Level1 from './levels/level1.js';
 
 const $menu = document.getElementById('menu');
 const $playBtn = document.getElementById('play-btn');
 const $canvas = document.getElementById('canvas');
 
-const block = new Entity(new Texture(await imageResource('tile-bricks')), new Vector2(32, 32), new Vector2(100, 50));
-const player = new Entity(new Texture(await imageResource('player')), new Vector2(32, 32), new Vector2(100, 100));
-
-const entities = [block, player];
-for (let i = 0; i < 16; ++i) {
-    const tile = new Entity(new Texture(await imageResource('tile-bricks')), new Vector2(32, 32), new Vector2(i * 32, 200));
-    tile.mass = 0;
-    entities.push(tile);
-}
-
 const ctx = $canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+const level = new Level1();
+
+const pressed = new Set();
+document.addEventListener('keydown', event => pressed.add(event.code));
+document.addEventListener('keyup', event => pressed.delete(event.code));
 
 function render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (const entity of entities) entity.render(ctx);
+    ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+    ctx.save();
+    ctx.scale($canvas.width / 1024 * 2, $canvas.height / 768 * 2);
+    level.render(ctx, 0);
+    ctx.restore();
     requestAnimationFrame(render);
 }
 
@@ -47,9 +43,8 @@ function start() {
     render();
 
     setInterval(() => {
-        player.position.y += 1;
-        block.position.y += 1;
-        resolveCollisions(entities);
+        level.updateKeyboard(pressed);
+        level.updatePhysics(1 / 60);
     }, 1000 / 60);
 }
 
