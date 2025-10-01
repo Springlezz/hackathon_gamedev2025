@@ -2,6 +2,7 @@ import Level1 from './levels/level1.js';
 
 const $menu = document.getElementById('menu');
 const $playBtn = document.getElementById('play-btn');
+const $canvasСontainer = document.getElementById('canvas-container');
 const $canvas = document.getElementById('canvas');
 
 const ctx = $canvas.getContext('2d');
@@ -38,7 +39,7 @@ resize();
 
 function start() {
     $menu.style.display = 'none';
-    $canvas.style.display = 'block';
+    $canvasСontainer.style.display = 'flex';
 
     render();
 
