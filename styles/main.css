@@ -28,11 +28,11 @@
 
 :root {
     --primary-color: #000000;
-    --secondary-color: #517ebd;
-    --third-color: rgb(130, 195, 238);
+    --secondary-color: #7577de;
+    --third-color: #96debc;
     --text-color: #ffffff;
     --background-color: #f1f6f9;
-    --darkest-color: #312f2f;
+    --darkest-color: #444346;
 }
 
 * {
@@ -93,6 +93,22 @@ main {
     gap: 10px;
 }
 
+.header-button-style{
+    background-color: var(--background-color);
+    color: #444096;
+    box-shadow: #625faa 2px 2px 2px 2px;
+    border: none;
+    padding: 8px;
+    font-size: 35px;
+    text-decoration: none;
+    font-family: 'epilepsysans', 'Gill Sans', calibri;
+    border-radius: 5px;
+}
+
+.header-button-style:hover {
+    background-color: var(--third-color);
+}
+
 #menu-buttons {
     flex: 1;
     display: flex;
@@ -110,7 +126,7 @@ main {
     padding: 15px;
     border: none;
     border-radius: 5px;
-    box-shadow: #405b96 2px 2px 2px 2px;
+    box-shadow: #444096 2px 2px 2px 2px;
     cursor: pointer;
 }
 #menu-buttons button:hover {
@@ -163,7 +179,7 @@ main {
 
 
 footer {
-    padding: 20px;
+    padding: 25px;
     background-color: var(--darkest-color);
     color: var(--text-color);
     font-family: 'EpilepsySans', sans-serif;
@@ -183,3 +199,37 @@ footer {
     display: block;
     background-color: white;
 }
+
+.text-info{
+    /*display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    text-indent: 1.5em;
+    font-family: 'EpilepsySans', 'Gill Sans', calibri;
+    font-size: 24px;
+    color: var(--darkest-text-color);*/
+    display: inline-block;
+    padding: 25px 20px;
+    margin: auto;
+    border-radius: 10px;
+    background-color: var(--background-color);
+    color: var(--darkest-color);
+    text-align: center;
+    font-family: 'EpilepsySans', 'Gill Sans', calibri;
+    font-size: 28px;
+    box-shadow: #444096 2px 2px 2px 2px;
+    text-indent: 1.5em;
+}
+
+.special-word-green{
+    color: #41d691;
+    font-weight: bold;
+}
+
+.special-word-purple{
+    color: #7577de;
+    font-weight: bold;
+}
+
