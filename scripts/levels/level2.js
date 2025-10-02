@@ -8,6 +8,7 @@ import Ladder from '../entities/ladder.js';
 import LaserStation from '../entities/laser-station.js';
 import Texture from '../texture.js';
 import Mirror from '../entities/mirror.js';
+import MirrorDiagonal from '../entities/mirror-diagonal.js';
 
 const backgroundTexture = await Texture.load('backgrounds/1');
 
@@ -29,14 +30,15 @@ export default class extends Level {
         new Ladder(new Vector2(280, -100), 4)
     ];
     lazers = [
-        new LaserStation(new Vector2(-30, 248)),
-        new LaserStation(new Vector2(30, 248)),
+        new LaserStation(new Vector2(-32, 244)),
+        new LaserStation(new Vector2(32, 244)),
     ];
     buttons = [
         new Button(new Vector2(-473, 180), false), //слева на стене кнопка
         new Button(new Vector2(266, 248), true), //справа наверху кнопка
     ];
     mirrors = [
-        new Mirror(new Vector2(472, 110)),
+        // new Mirror(new Vector2(472, 110)),
+        new MirrorDiagonal(new Vector2(-150, 0)),
     ];
 }

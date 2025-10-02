@@ -2,6 +2,7 @@ import BorderLeft from '../entities/border-left.js';
 import BorderRight from '../entities/border-right.js';
 import BorderTop from '../entities/border-top.js';
 import Door from '../entities/door.js';
+import MirrorDiagonal from '../entities/mirror-diagonal.js';
 import Player from '../entities/player.js';
 import Vector2 from '../vector2.js';
 
@@ -83,10 +84,10 @@ export default class Level {
     }
 
     raycastEntities(rayOrigin, rayDir, filter = () => true) {
-        return this.#entities.filter(filter).reduce((dist, entity) => {
+        return this.#entities.filter(filter).reduce(([prevEntity, dist], entity) => {
             const d = this.raycastEntity(rayOrigin, rayDir, entity);
-            return d < dist ? d : dist;
-        }, Infinity);
+            return d < dist ? [entity, d] : [prevEntity, dist];
+        }, [null, Infinity]);
     }
 
     isIntersecting(entity1, entity2) {
@@ -107,17 +108,17 @@ export default class Level {
             if (onLadder) this.player.velocity.y = 0.05;
             else {
                 const filter = entity => entity !== this.player && entity.solid;
-                const left = this.raycastEntities(
+                const [leftEntity, leftDist] = this.raycastEntities(
                     this.player.position.clone().add(new Vector2(-this.player.size.x / 2, -this.player.size.y / 2)),
                     new Vector2(0, -1),
                     filter
                 );
-                const right = this.raycastEntities(
+                const [rightEntity, rightDist] = this.raycastEntities(
                     this.player.position.clone().add(new Vector2(this.player.size.x / 2, -this.player.size.y / 2)),
                     new Vector2(0, -1),
                     filter
                 );
-                if (Math.min(left, right) === 0) this.player.velocity.y = 0.42;
+                if (Math.min(leftDist, rightDist) === 0) this.player.velocity.y = 0.42;
             }
         }
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');
@@ -136,12 +137,22 @@ export default class Level {
                 }
             }
         }
+        for (const mirror of this.mirrors) mirror.rayLength = 0;
         for (const lazer of this.lazers) {
-            lazer.rayLength = this.raycastEntities(
-                new Vector2(lazer.position.x, lazer.position.y + lazer.size.y / 2),
-                new Vector2(0, 1),
-                entity => entity !== lazer
+            const [entity, dist] = this.raycastEntities(
+                new Vector2(lazer.position.x, lazer.position.y - lazer.size.y / 2),
+                new Vector2(0, -1),
+                e => e !== lazer
             );
+            lazer.rayLength = dist;
+            if (entity instanceof MirrorDiagonal) {
+                const [entity2, dist] = this.raycastEntities(
+                    new Vector2(entity.position.x, entity.position.y),
+                    entity.left ? new Vector2(-1, 1) : new Vector2(1, 1),
+                    e => e !== entity && e.solid
+                );
+                entity.rayLength = dist;
+            }
         }
     }
 
