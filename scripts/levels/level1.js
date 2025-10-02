@@ -21,9 +21,9 @@ export default class extends Level {
         new Platform(new Vector2(-304, -48), 2),
         new Platform(new Vector2(-112, 64), 2),
     ];
-    battaries = [
+    batteries = [
         {
-            battary: new Battery(new Vector2(-320, -160)),
+            battery: new Battery(new Vector2(-320, -160)),
             slot: new BatterySlot(new Vector2(304, -112))
         }
     ];

@@ -15,7 +15,7 @@ export default class Level {
     ladders = [];
     lazers = [];
     mirrors = [];
-    battaries = [];
+    batteries = [];
     #entities = [];
 
     init() {
@@ -31,7 +31,7 @@ export default class Level {
             ...this.ladders,
             ...this.lazers,
             ...this.mirrors,
-            ...this.battaries.map(Object.values).flat(),
+            ...this.batteries.map(Object.values).flat(),
             this.player
         ];
     }
