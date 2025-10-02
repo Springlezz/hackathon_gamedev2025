@@ -52,6 +52,12 @@ export default class Level {
         ];
     }
 
+    updateEndDoor() {
+        if (this.batterySlots.every(slot => slot.hasBattery)) {
+            this.endDoor.open = true;
+        }
+    }
+
     getPenetrationVector(entity1, entity2) {
         const sumHalfSizes = entity1.size.clone().add(entity2.size).div(2);
         const dist = entity1.position.clone().sub(entity2.position);
@@ -151,6 +157,7 @@ export default class Level {
                     if (!slot.hasBattery && this.isIntersecting(this.player, slot)) {
                         slot.hasBattery = true;
                         this.player.hasBattery = false;
+                        this.updateEndDoor();
                         soundPutBattery.play();
                         break;
                     }
@@ -170,7 +177,7 @@ export default class Level {
     }
 
     updatePhysics(dt) {
-        if (this.isIntersecting(this.player, this.endDoor) && this.batterySlots.every(slot => slot.hasBattery)) {
+        if (this.isIntersecting(this.player, this.endDoor) && this.endDoor.open) {
             soundDoor.play();
             this.nextLevel();
             return;
