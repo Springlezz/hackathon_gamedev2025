@@ -15,14 +15,30 @@ const pressed = new Set();
 document.addEventListener('keydown', event => pressed.add(event.code));
 document.addEventListener('keyup', event => pressed.delete(event.code));
 
+let renderTime;
 function render() {
+    const now = Date.now();
+    const dt = now - renderTime;
+    renderTime = now;
+
     ctx.clearRect(0, 0, $canvas.width, $canvas.height);
     ctx.save();
     ctx.translate(512, 288);
-    level.render(ctx, 0);
+    level.render(ctx, dt);
     // level.renderDebug(ctx);
     ctx.restore();
+
     requestAnimationFrame(render);
+}
+
+let physicsTime;
+function updatePhysics() {
+    const now = Date.now();
+    const dt = now - physicsTime;
+    physicsTime = now;
+
+    level.updateKeyboard(pressed);
+    level.updatePhysics(dt);
 }
 
 function resize() {
@@ -43,12 +59,10 @@ function start() {
     $menu.style.display = 'none';
     $canvasСontainer.style.display = 'flex';
 
-    render();
-
-    setInterval(() => {
-        level.updateKeyboard(pressed);
-        level.updatePhysics(1 / 60);
-    }, 1000 / 60);
+    renderTime = Date.now();
+    physicsTime = Date.now();
+    requestAnimationFrame(render);
+    setInterval(updatePhysics, 1000 / 60);
 }
 
 $playBtn.addEventListener('click', start);

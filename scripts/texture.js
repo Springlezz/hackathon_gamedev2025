@@ -12,7 +12,11 @@ export default class Texture {
         ctx.translate(position.x, -position.y);
         ctx.rotate(rotation);
         ctx.scale(invertX, invertY);
-        ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
+        ctx.drawImage(
+            this.image,
+            -this.width / 2, -this.height / 2,
+            this.width, this.height
+        );
         ctx.restore();
     }
 
