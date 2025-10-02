@@ -2,8 +2,9 @@ import BorderLeft from '../entities/border-left.js';
 import BorderRight from '../entities/border-right.js';
 import BorderTop from '../entities/border-top.js';
 import Door from '../entities/door.js';
-import MirrorDiagonal from '../entities/mirror-diagonal.js';
+import Mirror from '../entities/mirror.js';
 import Player from '../entities/player.js';
+import Sensor from '../entities/sensor.js';
 import Sound from '../sound.js';
 import Vector2 from '../vector2.js';
 
@@ -23,9 +24,11 @@ export default class Level {
     ladders = [];
     lazers = [];
     mirrors = [];
+    sensors = [];
     batterySlots = [];
     batteries = [];
-    #entities = [];
+    entities = [];
+    #mirrorPositions = [];
 
     constructor(nextLevel) {
         this.nextLevel = nextLevel;
@@ -38,7 +41,14 @@ export default class Level {
 
         for (const slot of this.batterySlots) slot.hasBattery = false;
 
-        this.#entities = [
+        if (this.mirrors.length !== this.#mirrorPositions.length) {
+            this.#mirrorPositions = this.mirrors.map(mirror => mirror.position.clone());
+        }
+        else {
+            for (let i = 0; i < this.mirrors.length; ++i) this.mirrors[i].position = this.#mirrorPositions[i].clone();
+        }
+
+        this.entities = [
             ...this.#borders,
             this.startDoor,
             this.endDoor,
@@ -46,6 +56,7 @@ export default class Level {
             ...this.ladders,
             ...this.lazers,
             ...this.mirrors,
+            ...this.sensors,
             ...this.batterySlots,
             ...this.batteries,
             this.player
@@ -53,13 +64,11 @@ export default class Level {
     }
 
     updateEndDoor() {
-        if (this.batterySlots.every(slot => slot.hasBattery)) {
-            this.endDoor.open = true;
-        }
+        this.endDoor.open = this.batterySlots.every(slot => slot.hasBattery) && this.sensors.every(sensor => sensor.active);
     }
 
     getPenetrationVector(entity1, entity2) {
-        const sumHalfSizes = entity1.size.clone().add(entity2.size).div(2);
+        const sumHalfSizes = entity1.getSize().add(entity2.getSize()).div(2);
         const dist = entity1.position.clone().sub(entity2.position);
         const overlapX = sumHalfSizes.x - Math.abs(dist.x);
         const overlapY = sumHalfSizes.y - Math.abs(dist.y);
@@ -96,7 +105,7 @@ export default class Level {
     }
 
     raycastEntity(rayOrigin, rayDir, entity) {
-        const halfSize = entity.size.clone().div(2);
+        const halfSize = entity.getSize().div(2);
         const t1 = entity.position.clone().sub(halfSize).sub(rayOrigin).div(rayDir);
         const t2 = entity.position.clone().add(halfSize).sub(rayOrigin).div(rayDir);
         const tMin = Math.max(Math.min(t1.x, t2.x), Math.min(t1.y, t2.y));
@@ -105,51 +114,32 @@ export default class Level {
     }
 
     raycastEntities(rayOrigin, rayDir, filter = () => true) {
-        return this.#entities.filter(filter).reduce(([prevEntity, dist], entity) => {
+        return this.entities.filter(filter).reduce(([prevEntity, dist], entity) => {
             const d = this.raycastEntity(rayOrigin, rayDir, entity);
             return d < dist ? [entity, d] : [prevEntity, dist];
         }, [null, Infinity]);
     }
 
     isIntersecting(entity1, entity2) {
-        const sumHalfSizes = entity1.size.clone().add(entity2.size).div(2);
+        const sumHalfSizes = entity1.getSize().add(entity2.getSize()).div(2);
         const dist = entity1.position.clone().sub(entity2.position);
         return sumHalfSizes.x > Math.abs(dist.x) && sumHalfSizes.y > Math.abs(dist.y);
     }
 
-    updateKeyboard(pressed) {
+    updateKeyboard(pressed, dt) {
         if (pressed.has('KeyR')) return this.init();
 
         if (pressed.has('ArrowUp') || pressed.has('KeyW') || pressed.has('Space')) {
-            let onLadder = false;
-            for (const ladder of this.ladders) {
-                if (this.isIntersecting(this.player, ladder)) {
-                    onLadder = true;
-                    break;
-                }
-            }
-            if (onLadder) this.player.velocity.y = 0.05;
-            else {
-                const filter = entity => entity !== this.player && entity.solid;
-                const [leftEntity, leftDist] = this.raycastEntities(
-                    this.player.position.clone().add(new Vector2(-this.player.size.x / 2, -this.player.size.y / 2)),
-                    new Vector2(0, -1),
-                    filter
-                );
-                const [rightEntity, rightDist] = this.raycastEntities(
-                    this.player.position.clone().add(new Vector2(this.player.size.x / 2, -this.player.size.y / 2)),
-                    new Vector2(0, -1),
-                    filter
-                );
-                if (Math.min(leftDist, rightDist) === 0) {
-                    this.player.velocity.y = 0.42;
-                    soundJump.play();
-                }
+            if (this.player.onLadder) this.player.velocity.y = 0.075;
+            else if (this.player.onGround) {
+                this.player.velocity.y = 0.42;
+                soundJump.play();
             }
         }
+
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');
         const left = pressed.has('ArrowLeft') || pressed.has('KeyA');
-        this.player.velocity.x = Math.min(Math.max(this.player.velocity.x + (right - left) / 100, -0.1), 0.1);
+        this.player.velocity.x = Math.min(Math.max(this.player.velocity.x + (right - left) * dt / 1000, -0.1), 0.1);
 
         if (pressed.has('KeyE')) {
             if (this.player.hasBattery) {
@@ -165,15 +155,36 @@ export default class Level {
             }
             else {
                 for (const battery of this.batteries) {
-                    if (this.#entities.includes(battery) && this.isIntersecting(this.player, battery)) {
+                    if (this.entities.includes(battery) && this.isIntersecting(this.player, battery)) {
                         this.player.hasBattery = true;
-                        this.#entities.splice(this.#entities.indexOf(battery), 1);
+                        this.entities.splice(this.entities.indexOf(battery), 1);
                         soundPutBattery.play();
                         break;
                     }
                 }
             }
         }
+    }
+
+    emitLazer(enititySource, origin, direction, n = 0) {
+        const [entityDest, distance] = this.raycastEntities(
+            origin, direction,
+            entity => entity !== enititySource && entity.solid
+        );
+        if (entityDest instanceof Mirror && n < 10) {
+            const mirrorOrigin = origin.clone().add(direction.clone().mult(distance));
+            const mirrorDirection = entityDest.rotation % 2 === 0 ? new Vector2(direction.x, -direction.y) : new Vector2(-direction.x, direction.y);
+            entityDest.rays.push([
+                mirrorOrigin,
+                mirrorDirection,
+                this.emitLazer(entityDest, mirrorOrigin, mirrorDirection, n + 1)
+            ]);
+        }
+        else if (entityDest instanceof Sensor) {
+            entityDest.active = true;
+            this.updateEndDoor();
+        }
+        return distance;
     }
 
     updatePhysics(dt) {
@@ -184,37 +195,46 @@ export default class Level {
         }
 
         for (let i = 0; i < 10; ++i) {
-            for (const entity of this.#entities) {
+            for (const entity of this.entities) {
                 entity.physicsUpdate(dt / 10);
             }
-            for (let i = 0; i < this.#entities.length; ++i) {
-                for (let j = i + 1; j < this.#entities.length; ++j) {
-                    this.resolveCollision(this.#entities[i], this.#entities[j]);
+            for (let i = 0; i < this.entities.length; ++i) {
+                for (let j = i + 1; j < this.entities.length; ++j) {
+                    this.resolveCollision(this.entities[i], this.entities[j]);
                 }
             }
         }
-        for (const mirror of this.mirrors) mirror.rayLength = 0;
+        for (const mirror of this.mirrors) mirror.rays = [];
+        for (const sensor of this.sensors) sensor.active = false;
         for (const lazer of this.lazers) {
-            const [entity, dist] = this.raycastEntities(
-                new Vector2(lazer.position.x, lazer.position.y - lazer.size.y / 2),
-                new Vector2(0, -1),
-                e => e !== lazer
-            );
-            lazer.rayLength = dist;
-            if (entity instanceof MirrorDiagonal) {
-                const [entity2, dist] = this.raycastEntities(
-                    new Vector2(entity.position.x, entity.position.y),
-                    entity.left ? new Vector2(-1, 1) : new Vector2(1, 1),
-                    e => e !== entity && e.solid
-                );
-                entity.rayLength = dist;
+            lazer.rayLength = this.emitLazer(lazer, lazer.getRayOrigin(), lazer.getRayDirection());
+        }
+
+        const filter = entity => entity !== this.player && entity.solid;
+        const [leftEntity, leftDist] = this.raycastEntities(
+            this.player.position.clone().add(this.player.getSize().div(-2)),
+            new Vector2(0, -1),
+            filter
+        );
+        const [rightEntity, rightDist] = this.raycastEntities(
+            this.player.position.clone().add(this.player.getSize().div(new Vector2(2, -2))),
+            new Vector2(0, -1),
+            filter
+        );
+        this.player.onGround = Math.min(leftDist, rightDist) === 0;
+
+        this.player.onLadder = false;
+        for (const ladder of this.ladders) {
+            if (this.isIntersecting(this.player, ladder)) {
+                this.player.onLadder = true;
+                break;
             }
         }
     }
 
     render(ctx, dt) {
         this.background.render(ctx, dt, 0, 0);
-        for (const entity of this.#entities) {
+        for (const entity of this.entities) {
             entity.render(ctx, dt);
         }
     }
@@ -222,11 +242,12 @@ export default class Level {
     renderDebug(ctx) {
         ctx.save();
         ctx.globalAlpha = 0.75;
-        for (const entity of this.#entities) {
-            const x = Math.round(entity.position.x - entity.size.x / 2);
-            const y = Math.round(-entity.position.y - entity.size.y / 2);
+        for (const entity of this.entities) {
+            const size = entity.getSize();
+            const x = Math.round(entity.position.x - size.x / 2);
+            const y = Math.round(-entity.position.y - size.y / 2);
             ctx.strokeStyle = 'blue';
-            ctx.strokeRect(x + 0.5, y + 0.5, entity.size.x - 1, entity.size.y - 1);
+            ctx.strokeRect(x + 0.5, y + 0.5, size.x - 1, size.y - 1);
         }
 
         ctx.save();

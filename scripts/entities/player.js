@@ -3,20 +3,23 @@ import Texture from '../texture.js';
 import Vector2 from '../vector2.js';
 import Entity from './entity.js';
 
-const [textureStay, textureWalk, textureBattery] = await Promise.all([
+const [textureStay, textureWalk, textureJump, textureBattery] = await Promise.all([
     Texture.load('player-stay'),
-    AnimatedTexture.load('player-walk', 8, 80),
+    AnimatedTexture.load('player-walk', 8, 70),
+    AnimatedTexture.load('player-jump', 9, 120),
     Texture.load('battery'),
 ]);
 
 export default class Player extends Entity {
     size = new Vector2(17, 43);
     static = false;
+    onGround = false;
+    onLadder = false;
     invert = false;
     hasBattery = false;
 
     getTexture() {
-        return Math.abs(this.velocity.x) > 0.01 ? textureWalk : textureStay;
+        return this.onGround || this.onLadder ? Math.abs(this.velocity.x) > 0.01 ? textureWalk : textureStay : textureJump;
     }
 
     render(ctx, dt) {

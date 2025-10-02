@@ -15,6 +15,10 @@ export default class Entity {
         return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
     }
 
+    getSize() {
+        return this.size.clone();
+    }
+
     getTexture() {
         return this.texture;
     }

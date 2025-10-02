@@ -48,7 +48,7 @@ function updatePhysics() {
     physicsTime = now;
 
     if (!level) return;
-    level.updateKeyboard(pressed);
+    level.updateKeyboard(pressed, dt);
     level.updatePhysics(dt);
 }
 

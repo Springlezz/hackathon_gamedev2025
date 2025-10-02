@@ -1,15 +1,15 @@
-import Platform from '../entities/platform.js';
+import BatterySlot from '../entities/battery-slot.js';
+import Battery from '../entities/battery.js';
 import BorderBottomFull from '../entities/border-bottom-full.js';
+import PlatformThin from '../entities/platform-thin.js';
+import Platform from '../entities/platform.js';
+import Texture from '../texture.js';
 import Vector2 from '../vector2.js';
 import Level from './level.js';
-import PlatformThin from '../entities/platform-thin.js';
-import Battery from '../entities/battery.js';
-import BatterySlot from '../entities/battery-slot.js';
-import Texture from '../texture.js';
 
 const backgroundTexture = await Texture.load('backgrounds/1');
 
-export default class extends Level {
+export default class Level1 extends Level {
     background = backgroundTexture;
     startPoint = new Vector2(-448, -224);
     endPoint = new Vector2(448, -224);
