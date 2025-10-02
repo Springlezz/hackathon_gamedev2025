@@ -1,11 +1,39 @@
+import BorderLeft from '../entities/border-left.js';
+import BorderRight from '../entities/border-right.js';
+import BorderTop from '../entities/border-top.js';
+import Door from '../entities/door.js';
+import Player from '../entities/player.js';
 import Vector2 from '../vector2.js';
 
 export default class Level {
-    player = null;
-    entities = [];
+    #borders = [
+        new BorderLeft(new Vector2(-496, 0)),
+        new BorderRight(new Vector2(496, 0)),
+        new BorderTop(new Vector2(0, 272))
+    ];
+    platforms = [];
+    ladders = [];
+    lazers = [];
+    mirrors = [];
+    battaries = [];
+    #entities = [];
 
-    constructor() {
-        this.entities.push(this.player);
+    init() {
+        this.startDoor = new Door(this.startPoint.clone());
+        this.endDoor = new Door(this.endPoint.clone());
+        this.player = new Player(this.startPoint.clone());
+
+        this.#entities = [
+            ...this.#borders,
+            this.startDoor,
+            this.endDoor,
+            ...this.platforms,
+            ...this.ladders,
+            ...this.lazers,
+            ...this.mirrors,
+            ...this.battaries.map(Object.values).flat(),
+            this.player
+        ];
     }
 
     getPenetrationVector(entity1, entity2) {
@@ -54,8 +82,9 @@ export default class Level {
         return tMax >= 0 && tMin <= tMax ? Math.max(0, tMin) : Infinity;
     }
 
-    raycastEntities(rayOrigin, rayDir) {
-        return this.entities.reduce((dist, entity) => {
+    raycastEntities(rayOrigin, rayDir, onlySolid = false) {
+        return this.#entities.reduce((dist, entity) => {
+            if (onlySolid && !entity.solid) return dist;
             const d = this.raycastEntity(rayOrigin, rayDir, entity);
             return d < dist ? d : dist;
         }, Infinity);
@@ -65,11 +94,13 @@ export default class Level {
         if (pressed.has('ArrowUp') || pressed.has('KeyW') || pressed.has('Space')) {
             const left = this.raycastEntities(
                 this.player.position.clone().add(new Vector2(-this.player.size.x / 2, -this.player.size.y / 2)),
-                new Vector2(0, -1)
+                new Vector2(0, -1),
+                true
             );
             const right = this.raycastEntities(
                 this.player.position.clone().add(new Vector2(this.player.size.x / 2, -this.player.size.y / 2)),
-                new Vector2(0, -1)
+                new Vector2(0, -1),
+                true
             );
             if (Math.min(left, right) === 0) this.player.velocity.y = 500;
         }
@@ -80,19 +111,22 @@ export default class Level {
 
     updatePhysics(dt) {
         for (let i = 0; i < 10; ++i) {
-            for (const entity of this.entities) {
+            for (const entity of this.#entities) {
                 entity.physicsUpdate(dt / 10);
             }
-            for (let i = 0; i < this.entities.length; ++i) {
-                for (let j = i + 1; j < this.entities.length; ++j) {
-                    this.resolveCollision(this.entities[i], this.entities[j]);
+            for (let i = 0; i < this.#entities.length; ++i) {
+                for (let j = i + 1; j < this.#entities.length; ++j) {
+                    this.resolveCollision(this.#entities[i], this.#entities[j]);
                 }
             }
         }
     }
 
     render(ctx, dt) {
-        for (const entity of this.entities) {
+        for (const lazer of this.lazers) {
+            lazer.rayLength = this.raycastEntities(new Vector2(lazer.position.x, lazer.position.y + lazer.size.y / 2 + 0.01), new Vector2(0, 1));
+        }
+        for (const entity of this.#entities) {
             entity.render(ctx, dt);
         }
     }
@@ -100,7 +134,7 @@ export default class Level {
     renderDebug(ctx) {
         ctx.save();
         ctx.globalAlpha = 0.75;
-        for (const entity of this.entities) {
+        for (const entity of this.#entities) {
             const x = Math.round(entity.position.x - entity.size.x / 2);
             const y = Math.round(-entity.position.y - entity.size.y / 2);
             ctx.strokeStyle = 'blue';

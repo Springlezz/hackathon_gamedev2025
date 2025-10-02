@@ -9,6 +9,7 @@ const ctx = $canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
 const level = new Level1();
+level.init();
 
 const pressed = new Set();
 document.addEventListener('keydown', event => pressed.add(event.code));
@@ -19,7 +20,7 @@ function render() {
     ctx.save();
     ctx.translate(512, 288);
     level.render(ctx, 0);
-    level.renderDebug(ctx);
+    // level.renderDebug(ctx);
     ctx.restore();
     requestAnimationFrame(render);
 }

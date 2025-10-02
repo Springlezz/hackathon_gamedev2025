@@ -5,7 +5,7 @@ export default class Vector2 {
     }
 
     clone() {
-        return new Vector2(this.x, this.y);
+        return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
     }
 
     add(vector) {

@@ -11,6 +11,10 @@ export default class Entity {
         this.position = position;
     }
 
+    clone() {
+        return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+    }
+
     physicsUpdate(dt) {
         if (this.static) return;
         this.velocity.y -= GRAVITY * dt / 2;
