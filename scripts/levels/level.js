@@ -82,27 +82,43 @@ export default class Level {
         return tMax >= 0 && tMin <= tMax ? Math.max(0, tMin) : Infinity;
     }
 
-    raycastEntities(rayOrigin, rayDir, onlySolid = false) {
-        return this.#entities.reduce((dist, entity) => {
-            if (onlySolid && !entity.solid) return dist;
+    raycastEntities(rayOrigin, rayDir, filter = () => true) {
+        return this.#entities.filter(filter).reduce((dist, entity) => {
             const d = this.raycastEntity(rayOrigin, rayDir, entity);
             return d < dist ? d : dist;
         }, Infinity);
     }
 
+    isIntersecting(entity1, entity2) {
+        const sumHalfSizes = entity1.size.clone().add(entity2.size).div(2);
+        const dist = entity1.position.clone().sub(entity2.position);
+        return sumHalfSizes.x > Math.abs(dist.x) && sumHalfSizes.y > Math.abs(dist.y);
+    }
+
     updateKeyboard(pressed) {
         if (pressed.has('ArrowUp') || pressed.has('KeyW') || pressed.has('Space')) {
-            const left = this.raycastEntities(
-                this.player.position.clone().add(new Vector2(-this.player.size.x / 2, -this.player.size.y / 2)),
-                new Vector2(0, -1),
-                true
-            );
-            const right = this.raycastEntities(
-                this.player.position.clone().add(new Vector2(this.player.size.x / 2, -this.player.size.y / 2)),
-                new Vector2(0, -1),
-                true
-            );
-            if (Math.min(left, right) === 0) this.player.velocity.y = 0.5;
+            let onLadder = false;
+            for (const ladder of this.ladders) {
+                if (this.isIntersecting(this.player, ladder)) {
+                    onLadder = true;
+                    break;
+                }
+            }
+            if (onLadder) this.player.velocity.y = 0.05;
+            else {
+                const filter = entity => entity !== this.player && entity.solid;
+                const left = this.raycastEntities(
+                    this.player.position.clone().add(new Vector2(-this.player.size.x / 2, -this.player.size.y / 2)),
+                    new Vector2(0, -1),
+                    filter
+                );
+                const right = this.raycastEntities(
+                    this.player.position.clone().add(new Vector2(this.player.size.x / 2, -this.player.size.y / 2)),
+                    new Vector2(0, -1),
+                    filter
+                );
+                if (Math.min(left, right) === 0) this.player.velocity.y = 0.42;
+            }
         }
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');
         const left = pressed.has('ArrowLeft') || pressed.has('KeyA');
@@ -120,12 +136,17 @@ export default class Level {
                 }
             }
         }
+        for (const lazer of this.lazers) {
+            lazer.rayLength = this.raycastEntities(
+                new Vector2(lazer.position.x, lazer.position.y + lazer.size.y / 2),
+                new Vector2(0, 1),
+                entity => entity !== lazer
+            );
+        }
     }
 
     render(ctx, dt) {
-        for (const lazer of this.lazers) {
-            lazer.rayLength = this.raycastEntities(new Vector2(lazer.position.x, lazer.position.y + lazer.size.y / 2 + 0.01), new Vector2(0, 1));
-        }
+        this.background.render(ctx, dt, 0, 0);
         for (const entity of this.#entities) {
             entity.render(ctx, dt);
         }
