@@ -1,3 +1,4 @@
+import BoxSmall from '../entities/box-small.js';
 import Platform from '../entities/platform.js';
 import Player from '../entities/player.js';
 import WallBottomFull from '../entities/wall-bottom-full.js';
@@ -16,6 +17,7 @@ export default class extends Level {
         new WallTop(new Vector2(0, 272)),
         new WallBottomFull(new Vector2(0, -272)),
         new Platform(new Vector2(-184, -182)),
-        new Platform(new Vector2(-314, -112))
+        new Platform(new Vector2(-314, -112)),
+        new BoxSmall(new Vector2(-314, 0))
     ];
 }

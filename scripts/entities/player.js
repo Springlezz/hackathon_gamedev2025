@@ -7,7 +7,7 @@ const texture = await Texture.load('player');
 export default class Player extends Entity {
     texture = texture;
     size = new Vector2(17, 41);
-    mass = 1;
+    mass = 5;
 
     invert = false;
 
