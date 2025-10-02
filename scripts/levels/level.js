@@ -7,7 +7,10 @@ import Player from '../entities/player.js';
 import Sound from '../sound.js';
 import Vector2 from '../vector2.js';
 
-const soundPutBattery = await Sound.load('put-battery');
+const [soundPutBattery, soundDoor] = await Promise.all([
+    Sound.load('put-battery'),
+    Sound.load('door')
+]);
 
 export default class Level {
     #borders = [
@@ -164,6 +167,7 @@ export default class Level {
 
     updatePhysics(dt) {
         if (this.isIntersecting(this.player, this.endDoor) && this.batterySlots.every(slot => slot.hasBattery)) {
+            soundDoor.play();
             this.nextLevel();
             return;
         }

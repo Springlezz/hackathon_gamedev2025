@@ -6,6 +6,6 @@ const texture = await Texture.load('door');
 
 export default class Door extends Entity {
     texture = texture;
-    size = new Vector2(64, 64);
+    size = new Vector2(40, 40);
     solid = false;
 }
