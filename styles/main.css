@@ -200,26 +200,20 @@ footer {
     background-color: white;
 }
 
-.text-info{
-    /*display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
-    text-align: center;
-    text-indent: 1.5em;
-    font-family: 'EpilepsySans', 'Gill Sans', calibri;
-    font-size: 24px;
-    color: var(--darkest-text-color);*/
-    display: inline-block;
+.text-info {
+    display: block;
+    max-width: 900px;    /* ограничение по ширине */
+    width: 90%;          /* адаптивная ширина */
+    margin: 30px auto;   /* чтобы блоки были по центру и с отступом */
     padding: 25px 20px;
-    margin: auto;
+
     border-radius: 10px;
     background-color: var(--background-color);
     color: var(--darkest-color);
     text-align: center;
     font-family: 'EpilepsySans', 'Gill Sans', calibri;
-    font-size: 28px;
-    box-shadow: #444096 2px 2px 2px 2px;
+    font-size: 22px;     /* чуть меньше, чем у меню, чтобы выглядело гармонично */
+    box-shadow: #444096 2px 2px 5px 0;
     text-indent: 1.5em;
 }
 
@@ -231,5 +225,16 @@ footer {
 .special-word-purple{
     color: #7577de;
     font-weight: bold;
+}
+
+.button-nav{
+    color: blue;
+    cursor: pointer;
+    text-decoration: none;
+}
+.button-nav:hover {
+    background-color: var(--third-color);
+    padding: 1px;
+    border-radius: 5px;
 }
 
