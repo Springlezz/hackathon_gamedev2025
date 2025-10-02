@@ -6,6 +6,6 @@ const texture = await Texture.load('battery');
 
 export default class Battery extends Entity {
     texture = texture;
-    size = new Vector2(24, 44);
+    size = new Vector2(12, 22);
     solid = false;
 }
