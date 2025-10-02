@@ -20,6 +20,7 @@ const pressed = new Set();
 document.addEventListener('keydown', event => pressed.add(event.code));
 document.addEventListener('keyup', event => pressed.delete(event.code));
 
+const debug = location.search.slice(1).split('&').includes('debug');
 let renderTime;
 function render() {
     const now = Date.now();
@@ -32,7 +33,7 @@ function render() {
         ctx.save();
         ctx.translate(512, 288);
         level.render(ctx, dt);
-        level.renderDebug(ctx);
+        if (debug) level.renderDebug(ctx);
         ctx.restore();
     }
 
