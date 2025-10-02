@@ -16,6 +16,7 @@ export default class Level {
     ladders = [];
     lazers = [];
     mirrors = [];
+    batterySlots = [];
     batteries = [];
     #entities = [];
 
@@ -28,6 +29,8 @@ export default class Level {
         this.endDoor = new Door(this.endPoint.clone());
         this.player = new Player(this.startPoint.clone());
 
+        for (const slot of this.batterySlots) slot.hasBattery = false;
+
         this.#entities = [
             ...this.#borders,
             this.startDoor,
@@ -36,7 +39,8 @@ export default class Level {
             ...this.ladders,
             ...this.lazers,
             ...this.mirrors,
-            ...this.batteries.map(Object.values).flat(),
+            ...this.batterySlots,
+            ...this.batteries,
             this.player
         ];
     }
@@ -101,6 +105,8 @@ export default class Level {
     }
 
     updateKeyboard(pressed) {
+        if (pressed.has('KeyR')) return this.init();
+
         if (pressed.has('ArrowUp') || pressed.has('KeyW') || pressed.has('Space')) {
             let onLadder = false;
             for (const ladder of this.ladders) {
@@ -128,10 +134,31 @@ export default class Level {
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');
         const left = pressed.has('ArrowLeft') || pressed.has('KeyA');
         this.player.velocity.x = Math.min(Math.max(this.player.velocity.x + (right - left) / 100, -0.1), 0.1);
+
+        if (pressed.has('KeyE')) {
+            if (this.player.hasBattery) {
+                for (const slot of this.batterySlots) {
+                    if (!slot.hasBattery && this.isIntersecting(this.player, slot)) {
+                        slot.hasBattery = true;
+                        this.player.hasBattery = false;
+                        break;
+                    }
+                }
+            }
+            else {
+                for (const battery of this.batteries) {
+                    if (this.#entities.includes(battery) && this.isIntersecting(this.player, battery)) {
+                        this.player.hasBattery = true;
+                        this.#entities.splice(this.#entities.indexOf(battery), 1);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     updatePhysics(dt) {
-        if (this.isIntersecting(this.player, this.endDoor)) {
+        if (this.isIntersecting(this.player, this.endDoor) && !this.batteries.some(b => this.#entities.includes(b))) {
             this.nextLevel();
             return;
         }
