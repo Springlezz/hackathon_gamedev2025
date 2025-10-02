@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Игра</title>
+        <title>Об игре</title>
+        <link rel="icon" href="/webPictures/icon/icon.png" type="image/png">
         <link rel="stylesheet" href="/styles/main.css">
         <script src="/scripts/index.js" type="module" defer></script>
         <script src="/scripts/dialog-page.js" defer></script>
@@ -12,22 +13,21 @@
         <main id="menu">
             <!-- Заголовок + шапка -->
             <div class="header-container">
-                <header>Игра</header>
+                <header>Джестер протокол</header>
                 <div id="header-buttons">
                     <a href="gallery.html" class="header-button-style">Галерея</a>
                     <a href="index.html" class="header-button-style">Начать игру</a>
                 </div>
             </div>
-            <div class="text-info">
-                <!-- КОСТЫЛЬ!!! НЕ УДАЛЯТЬ -->
-            </div>
+           
 
             <div id="main" class="text-info">
                 <nav>
-                    <a class="button-nav" href="#main">Информация</a>
-                    <a class="button-nav" href="#target">Суть игры</a>
-                    <a class="button-nav" href="#lore">Основной лор</a>
-                    <a class="button-nav" href="#about_us">О разработчиках</a>
+                    <a class="button-nav" href="#main">| Информация |</a>
+                    <a class="button-nav" href="#target">| Суть игры |</a>
+                    <a class="button-nav" href="#lore">| Основной лор |</a>
+                    <a class="button-nav" href="#about_us">| О разработчиках |</a>
+                    <a class="button-nav" href="#stack">| Наш стек |</a>
                 </nav>
                 <h3>Информация</h3>
                 <p>Игра создана в рамках хакатона <span class="special-word-green">Юнигеймлаб 1.2</span>, 
@@ -37,19 +37,55 @@
 
             <div id="target" class="text-info">
                 <h3>Суть игры</h3>
-                <p>Игра представляет собой платформер-головоломку, в которой вы можете взаимодействовать с игровыми объектами, решать задачи, прыгать и бегать. Но вы не одни! С вами будет ваша помощница, которая будет помогать вам решать задачи... правда она очень любит подшутить над вами и не любит ошибок.</p>
+                <p>Игра представляет собой платформер-головоломку, в которой вы можете взаимодействовать с игровыми объектами, решать задачи, прыгать и бегать. Но вы не одни! С вами будет ваша помощница Джестер, которая будет помогать вам решать задачи... правда она очень любит подшутить над вами и не любит ошибок.</p>
 
                 <p>В игре не так много уровней. В ней задумано несколько концовок и полноценная сюжетная линия.</p>
             </div>
 
             <div id="lore" class="text-info">
                 <h3>Основной лор</h3>
-                <p>История и предыстория событий...</p>
+                <p>Главный герой — приглашённый механик, которому поручено восстановить работу комплекса, где всё оборудование дало сбой.
+                <p>Его напарница Джестер (или же сокращенно Джес) — встроенный ИИ-помощница, предназначенная для того, чтобы направлять и облегчать задачи.</p>
+                <p><span class="special-word-green">Но есть проблема:</span> ИИ поломана, как и сама система комплекса нестабильна. Она действительно помогает в прохождении, но также подшучивает, путает подсказки и иногда ставит ловушки.</p>
+                <p>Игрок должен пройти через череду испытаний, чинить механизмы и находить выходы.</p>
+                <p>Сюжет двигается от простого ремонта к открытию правды: ИИ вышел из-под контроля и ведёт свой “эксперимент” над механиком.</p>
             </div>
 
             <div id="about_us" class="text-info">
                 <h3>О разработчиках</h3>
-                <p>Команда проекта...</p>
+                <p>Наша команда "404: команда не найдена" (звучит довольно абсудрно и мы об этом знаем) состоит из шести человек-энтузиастов и студентов колледжа НКЭИВТ, которые сделали эту игру в рамках хакатона <span class="special-word-green">Юнигеймлаб 1.2</span>.</p>
+                <dl>
+                    <dt><span class="special-word-purple">Мария Бурсянина</span></dt>
+                    <dd>Fullstack-разработчик, frontend + backend</dd>
+                    <dt><span class="special-word-purple">Михаил Зуенко</span></dt>
+                    <dd>Fullstack-разработчик, frontend + backend</dd>
+                    <dt><span class="special-word-purple">Александр Чернейкин</span></dt>
+                    <dd>Музыка и звукосопровождение, дизайн</dd>
+                    <dt><span class="special-word-purple">Ксения Уручьёва</span></dt>
+                    <dd>Дизайн, художник, сюжет, анимация</dd>
+                    <dt><span class="special-word-purple">Павел Жданов</span></dt>
+                    <dd>Дизайн, художник</dd>
+                    <dt><span class="special-word-purple">Алексей Соколов</span></dt>
+                    <dd>Гейм-дизайн, проектировка уровней</dd>
+                </dl>
+            </div>
+
+            <div class="text-info" id="stack">
+                <h3>Наш стек</h3>
+                <dl>
+                    <dt><span class="special-word-purple">Движок</span></dt>
+                    <dd>Самодельный, написанный на Javascript</dd>
+                    <dt><span class="special-word-purple">ЯП и верстка</span></dt>
+                    <dd>Javascript, html + css</dd>
+                    <dt><span class="special-word-purple">Александр Чернейкин</span></dt>
+                    <dd>Музыка и звукосопровождение, дизайн</dd>
+                    <dt><span class="special-word-purple">Ксения Уручьёва</span></dt>
+                    <dd>Дизайн, художник, сюжет, анимация</dd>
+                    <dt><span class="special-word-purple">Павел Жданов</span></dt>
+                    <dd>Дизайн, художник</dd>
+                    <dt><span class="special-word-purple">Наш репозиторий</span></dt>
+                    <dd><a href="https://github.com/Springlezz/hackathon_gamedev2025" target="_blank">Перейти на GitHub</a></dd>
+                </dl>
             </div>
 
             <!-- Футер -->
@@ -58,8 +94,5 @@
                 <a class="footer-link" href="https://github.com/Springlezz/hackathon_gamedev2025" target="_blank">Репозиторий</a>
             </footer>
         </main>
-        <div id="canvas-container">
-            <canvas id="canvas"></canvas>
-        </div>
     </body>
 </html>
