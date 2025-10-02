@@ -4,7 +4,10 @@ import BorderTop from '../entities/border-top.js';
 import Door from '../entities/door.js';
 import MirrorDiagonal from '../entities/mirror-diagonal.js';
 import Player from '../entities/player.js';
+import Sound from '../sound.js';
 import Vector2 from '../vector2.js';
+
+const soundPutBattery = await Sound.load('put-battery');
 
 export default class Level {
     #borders = [
@@ -141,6 +144,7 @@ export default class Level {
                     if (!slot.hasBattery && this.isIntersecting(this.player, slot)) {
                         slot.hasBattery = true;
                         this.player.hasBattery = false;
+                        soundPutBattery.play();
                         break;
                     }
                 }
@@ -150,6 +154,7 @@ export default class Level {
                     if (this.#entities.includes(battery) && this.isIntersecting(this.player, battery)) {
                         this.player.hasBattery = true;
                         this.#entities.splice(this.#entities.indexOf(battery), 1);
+                        soundPutBattery.play();
                         break;
                     }
                 }

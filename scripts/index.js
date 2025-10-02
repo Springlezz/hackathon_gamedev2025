@@ -1,3 +1,5 @@
+import Sound from './sound.js';
+
 const $menu = document.getElementById('menu');
 const $playBtn = document.getElementById('play-btn');
 const $canvasСontainer = document.getElementById('canvas-container');
@@ -63,12 +65,7 @@ function resize() {
 addEventListener('resize', resize);
 resize();
 
-const audio = new Promise(resolve => {
-    const audio = new Audio('/audios/theme.mp3');
-    audio.volume = 0.25;
-    audio.loop = true;
-    audio.addEventListener('canplaythrough', () => resolve(audio));
-});
+const soundTheme = Sound.load('theme', true, 0.25);
 
 async function start() {
     await loadLevel(1);
@@ -76,7 +73,7 @@ async function start() {
     $menu.style.display = 'none';
     $canvasСontainer.style.display = 'flex';
 
-    audio.then(audio => audio.play());
+    soundTheme.then(sound => sound.play());
 
     renderTime = Date.now();
     physicsTime = Date.now();
