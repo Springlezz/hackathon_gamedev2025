@@ -16,7 +16,7 @@ export default class Player extends Entity {
 
         ctx.save();
         if (this.invert) {
-            ctx.translate(this.position.x, this.position.y);
+            ctx.translate(this.position.x, -this.position.y);
             ctx.scale(-1, 1);
             this.texture.render(ctx, new Vector2(0, 0), dt);
         }

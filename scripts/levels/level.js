@@ -75,10 +75,10 @@ export default class Level {
     updateKeyboard(pressed) {
         if (pressed.has('ArrowUp') || pressed.has('KeyW') || pressed.has('Space')) {
             const dist = this.raycastEntities(
-                this.player.position.clone().add(new Vector2(0, this.player.size.y / 2)),
-                new Vector2(0, 1)
+                this.player.position.clone().add(new Vector2(0, -this.player.size.y / 2)),
+                new Vector2(0, -1)
             );
-            if (dist === 0) this.player.velocity.y = -500;
+            if (dist === 0) this.player.velocity.y = 500;
         }
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');
         const left = pressed.has('ArrowLeft') || pressed.has('KeyA');
@@ -101,5 +101,40 @@ export default class Level {
         for (const entity of this.entities) {
             entity.render(ctx, dt);
         }
+    }
+
+    renderDebug(ctx) {
+        ctx.save();
+        ctx.globalAlpha = 0.75;
+        for (const entity of this.entities) {
+            const x = Math.round(entity.position.x - entity.texture.width / 2);
+            const y = Math.round(-entity.position.y - entity.texture.height / 2);
+            ctx.strokeStyle = 'red';
+            ctx.strokeRect(x + 0.5, y + 0.5, entity.texture.width - 1, entity.texture.height - 1);
+        }
+        for (const entity of this.entities) {
+            const x = Math.round(entity.position.x - entity.size.x / 2);
+            const y = Math.round(-entity.position.y - entity.size.y / 2);
+            ctx.strokeStyle = 'blue';
+            ctx.strokeRect(x + 0.5, y + 0.5, entity.size.x - 1, entity.size.y - 1);
+        }
+
+        ctx.save();
+        ctx.strokeStyle = 'green';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(50, 0);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(0, -50);
+        ctx.moveTo(45, -5);
+        ctx.lineTo(50, 0);
+        ctx.lineTo(45, 5);
+        ctx.moveTo(-5, -45);
+        ctx.lineTo(0, -50);
+        ctx.lineTo(5, -45);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.restore();
     }
 }

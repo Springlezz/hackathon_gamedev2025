@@ -12,9 +12,9 @@ export default class Entity {
 
     physicsUpdate(dt) {
         if (this.mass === 0) return;
-        this.velocity.y += GRAVITY * dt / 2;
+        this.velocity.y -= GRAVITY * dt / 2;
         this.position.add(this.velocity.clone().mult(dt));
-        this.velocity.y += GRAVITY * dt / 2;
+        this.velocity.y -= GRAVITY * dt / 2;
     }
 
     render(ctx, dt) {

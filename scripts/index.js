@@ -17,8 +17,9 @@ document.addEventListener('keyup', event => pressed.delete(event.code));
 function render() {
     ctx.clearRect(0, 0, $canvas.width, $canvas.height);
     ctx.save();
-    ctx.scale($canvas.width / 1024 * 2, $canvas.height / 768 * 2);
+    ctx.translate(512, 288);
     level.render(ctx, 0);
+    level.renderDebug(ctx);
     ctx.restore();
     requestAnimationFrame(render);
 }
@@ -26,12 +27,12 @@ function render() {
 function resize() {
     const width = innerHeight * 16 / 9;
     if (width <= innerWidth) {
-        $canvas.width = width;
-        $canvas.height = innerHeight;
+        $canvas.style.width = width + 'px';
+        $canvas.style.height = innerHeight + 'px';
     }
     else {
-        $canvas.width = innerWidth;
-        $canvas.height = innerWidth * 9 / 16;
+        $canvas.style.width = innerWidth + 'px';
+        $canvas.style.height = innerWidth * 9 / 16 + 'px';
     }
 }
 addEventListener('resize', resize);

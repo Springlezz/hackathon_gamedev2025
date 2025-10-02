@@ -8,7 +8,9 @@ export default class Texture {
     }
 
     render(ctx, position) {
-        ctx.drawImage(this.image, position.x - this.width / 2, position.y - this.height / 2, this.width, this.height);
+        const x = Math.round(position.x - this.width / 2);
+        const y = Math.round(-position.y - this.height / 2);
+        ctx.drawImage(this.image, x, y, this.width, this.height);
     }
 
     static async load(name) {

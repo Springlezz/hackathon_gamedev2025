@@ -14,14 +14,18 @@ export default class AnimatedTexture {
     }
 
     static async load(name, framesNum) {
-        const img = new Image();
-        const promise = new Promise((resolve, reject) => {
-            img.addEventListener('load', () => {
-                resolve(new AnimatedTexture(img, framesNum));
+        if (textures[name]) return textures[name];
+        else {
+            const img = new Image();
+            const promise = new Promise((resolve, reject) => {
+                img.addEventListener('load', () => {
+                    textures[name] = img;
+                    resolve(new AnimatedTexture(img, framesNum));
+                });
+                img.addEventListener('error', reject);
             });
-            img.addEventListener('error', reject);
-        });
-        img.src = `/images/${name}.png`;
-        return promise;
+            img.src = `/images/${name}.png`;
+            return promise;
+        }
     }
 }
