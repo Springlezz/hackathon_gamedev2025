@@ -4,7 +4,14 @@ import BorderTop from '../entities/border-top.js';
 import Door from '../entities/door.js';
 import MirrorDiagonal from '../entities/mirror-diagonal.js';
 import Player from '../entities/player.js';
+import Sound from '../sound.js';
 import Vector2 from '../vector2.js';
+
+const [soundJump, soundPutBattery, soundDoor] = await Promise.all([
+    Sound.load('jump', 0.75),
+    Sound.load('put-battery'),
+    Sound.load('door')
+]);
 
 export default class Level {
     #borders = [
@@ -16,13 +23,20 @@ export default class Level {
     ladders = [];
     lazers = [];
     mirrors = [];
+    batterySlots = [];
     batteries = [];
     #entities = [];
+
+    constructor(nextLevel) {
+        this.nextLevel = nextLevel;
+    }
 
     init() {
         this.startDoor = new Door(this.startPoint.clone());
         this.endDoor = new Door(this.endPoint.clone());
         this.player = new Player(this.startPoint.clone());
+
+        for (const slot of this.batterySlots) slot.hasBattery = false;
 
         this.#entities = [
             ...this.#borders,
@@ -32,9 +46,16 @@ export default class Level {
             ...this.ladders,
             ...this.lazers,
             ...this.mirrors,
-            ...this.batteries.map(Object.values).flat(),
+            ...this.batterySlots,
+            ...this.batteries,
             this.player
         ];
+    }
+
+    updateEndDoor() {
+        if (this.batterySlots.every(slot => slot.hasBattery)) {
+            this.endDoor.open = true;
+        }
     }
 
     getPenetrationVector(entity1, entity2) {
@@ -97,6 +118,8 @@ export default class Level {
     }
 
     updateKeyboard(pressed) {
+        if (pressed.has('KeyR')) return this.init();
+
         if (pressed.has('ArrowUp') || pressed.has('KeyW') || pressed.has('Space')) {
             let onLadder = false;
             for (const ladder of this.ladders) {
@@ -118,15 +141,48 @@ export default class Level {
                     new Vector2(0, -1),
                     filter
                 );
-                if (Math.min(leftDist, rightDist) === 0) this.player.velocity.y = 0.42;
+                if (Math.min(leftDist, rightDist) === 0) {
+                    this.player.velocity.y = 0.42;
+                    soundJump.play();
+                }
             }
         }
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');
         const left = pressed.has('ArrowLeft') || pressed.has('KeyA');
         this.player.velocity.x = Math.min(Math.max(this.player.velocity.x + (right - left) / 100, -0.1), 0.1);
+
+        if (pressed.has('KeyE')) {
+            if (this.player.hasBattery) {
+                for (const slot of this.batterySlots) {
+                    if (!slot.hasBattery && this.isIntersecting(this.player, slot)) {
+                        slot.hasBattery = true;
+                        this.player.hasBattery = false;
+                        this.updateEndDoor();
+                        soundPutBattery.play();
+                        break;
+                    }
+                }
+            }
+            else {
+                for (const battery of this.batteries) {
+                    if (this.#entities.includes(battery) && this.isIntersecting(this.player, battery)) {
+                        this.player.hasBattery = true;
+                        this.#entities.splice(this.#entities.indexOf(battery), 1);
+                        soundPutBattery.play();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     updatePhysics(dt) {
+        if (this.isIntersecting(this.player, this.endDoor) && this.endDoor.open) {
+            soundDoor.play();
+            this.nextLevel();
+            return;
+        }
+
         for (let i = 0; i < 10; ++i) {
             for (const entity of this.#entities) {
                 entity.physicsUpdate(dt / 10);

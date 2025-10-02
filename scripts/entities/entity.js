@@ -15,6 +15,10 @@ export default class Entity {
         return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
     }
 
+    getTexture() {
+        return this.texture;
+    }
+
     physicsUpdate(dt) {
         if (this.static) return;
         this.velocity.y -= GRAVITY * dt / 2000;
@@ -24,6 +28,6 @@ export default class Entity {
     }
 
     render(ctx, dt) {
-        this.texture.render(ctx, dt, this.position);
+        this.getTexture().render(ctx, dt, this.position);
     }
 }

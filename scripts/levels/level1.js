@@ -5,7 +5,6 @@ import Level from './level.js';
 import PlatformThin from '../entities/platform-thin.js';
 import Battery from '../entities/battery.js';
 import BatterySlot from '../entities/battery-slot.js';
-import Ladder from '../entities/ladder.js';
 import Texture from '../texture.js';
 
 const backgroundTexture = await Texture.load('backgrounds/1');
@@ -25,10 +24,10 @@ export default class extends Level {
         new PlatformThin(new Vector2(344, -96), 3, true),
         new PlatformThin(new Vector2(240, -184), 3),
     ];
+    batterySlots = [
+        new BatterySlot(new Vector2(316, -164))
+    ];
     batteries = [
-        {
-            battery: new Battery(new Vector2(-256, -245)),
-            slot: new BatterySlot(new Vector2(316, -164))
-        }
+        new Battery(new Vector2(-256, -245))
     ];
 }

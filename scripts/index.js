@@ -1,4 +1,4 @@
-import Level1 from './levels/level1.js';
+import Sound from './sound.js';
 
 const $menu = document.getElementById('menu');
 const $playBtn = document.getElementById('play-btn');
@@ -8,25 +8,34 @@ const $canvas = document.getElementById('canvas');
 const ctx = $canvas.getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
-const level = new Level1();
-level.init();
+let level;
+async function loadLevel(n) {
+    level = null;
+    const Level = (await import(`./levels/level${n}.js`)).default;
+    level = new Level(() => loadLevel(n + 1));
+    level.init();
+}
 
 const pressed = new Set();
 document.addEventListener('keydown', event => pressed.add(event.code));
 document.addEventListener('keyup', event => pressed.delete(event.code));
 
+const debug = location.search.slice(1).split('&').includes('debug');
 let renderTime;
 function render() {
     const now = Date.now();
-    const dt = now - renderTime;
+    let dt = now - renderTime;
+    if (dt > 1000) dt = 1000;
     renderTime = now;
 
     ctx.clearRect(0, 0, $canvas.width, $canvas.height);
-    ctx.save();
-    ctx.translate(512, 288);
-    level.render(ctx, dt);
-    // level.renderDebug(ctx);
-    ctx.restore();
+    if (level) {
+        ctx.save();
+        ctx.translate(512, 288);
+        level.render(ctx, dt);
+        if (debug) level.renderDebug(ctx);
+        ctx.restore();
+    }
 
     requestAnimationFrame(render);
 }
@@ -34,9 +43,11 @@ function render() {
 let physicsTime;
 function updatePhysics() {
     const now = Date.now();
-    const dt = now - physicsTime;
+    let dt = now - physicsTime;
+    if (dt > 1000) dt = 1000;
     physicsTime = now;
 
+    if (!level) return;
     level.updateKeyboard(pressed);
     level.updatePhysics(dt);
 }
@@ -55,9 +66,15 @@ function resize() {
 addEventListener('resize', resize);
 resize();
 
-function start() {
+const soundTheme = Sound.load('theme', 1, true);
+
+async function start() {
+    await loadLevel(1);
+
     $menu.style.display = 'none';
     $canvasСontainer.style.display = 'flex';
+
+    soundTheme.then(sound => sound.play());
 
     renderTime = Date.now();
     physicsTime = Date.now();

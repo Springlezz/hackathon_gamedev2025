@@ -26,8 +26,8 @@ export default class Texture {
             const img = new Image();
             const promise = new Promise((resolve, reject) => {
                 img.addEventListener('load', () => {
-                    textures[name] = img;
-                    resolve(new Texture(img));
+                    textures[name] = new Texture(img);
+                    resolve(textures[name]);
                 });
                 img.addEventListener('error', reject);
             });
