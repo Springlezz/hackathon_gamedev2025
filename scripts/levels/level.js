@@ -7,7 +7,8 @@ import Player from '../entities/player.js';
 import Sound from '../sound.js';
 import Vector2 from '../vector2.js';
 
-const [soundPutBattery, soundDoor] = await Promise.all([
+const [soundJump, soundPutBattery, soundDoor] = await Promise.all([
+    Sound.load('jump', 0.75),
     Sound.load('put-battery'),
     Sound.load('door')
 ]);
@@ -134,7 +135,10 @@ export default class Level {
                     new Vector2(0, -1),
                     filter
                 );
-                if (Math.min(leftDist, rightDist) === 0) this.player.velocity.y = 0.42;
+                if (Math.min(leftDist, rightDist) === 0) {
+                    this.player.velocity.y = 0.42;
+                    soundJump.play();
+                }
             }
         }
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');

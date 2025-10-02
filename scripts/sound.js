@@ -1,7 +1,7 @@
 const sounds = {};
 
 export default class Sound {
-    constructor(audio, loop = false, volume = 1) {
+    constructor(audio, volume = 1, loop = false) {
         this.audio = audio;
         this.loop = loop;
         this.volume = volume;
@@ -14,14 +14,14 @@ export default class Sound {
         audio.play();
     }
 
-    static async load(name, loop = false, volume = 1) {
-        if (sounds[name]) return new Sound(sounds[name], loop, volume);
+    static async load(name, volume = 1, loop = false) {
+        if (sounds[name]) return new Sound(sounds[name], volume, loop);
         else {
             const audio = new Audio(`/sounds/${name}.mp3`);
             const promise = new Promise((resolve, reject) => {
                 audio.addEventListener('canplaythrough', () => {
                     sounds[name] = audio;
-                    resolve(new Sound(audio, loop, volume));
+                    resolve(new Sound(audio, volume, loop));
                 });
                 audio.addEventListener('error', reject);
             });

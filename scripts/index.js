@@ -65,7 +65,7 @@ function resize() {
 addEventListener('resize', resize);
 resize();
 
-const soundTheme = Sound.load('theme', true, 0.25);
+const soundTheme = Sound.load('theme', 1, true);
 
 async function start() {
     await loadLevel(1);
