@@ -7,10 +7,13 @@ export default class Texture {
         this.height = image.height;
     }
 
-    render(ctx, position) {
-        const x = Math.round(position.x - this.width / 2);
-        const y = Math.round(-position.y - this.height / 2);
-        ctx.drawImage(this.image, x, y, this.width, this.height);
+    render(ctx, dt, position, rotation = 0, invertX = 1, invertY = 1) {
+        ctx.save();
+        ctx.translate(position.x, -position.y);
+        ctx.rotate(rotation);
+        ctx.scale(invertX, invertY);
+        ctx.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
+        ctx.restore();
     }
 
     static async load(name) {

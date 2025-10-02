@@ -7,4 +7,5 @@ const texture = await Texture.load('ladder');
 export default class Ladder extends Entity {
     texture = texture;
     size = new Vector2(24, 64);
+    solid = false;
 }

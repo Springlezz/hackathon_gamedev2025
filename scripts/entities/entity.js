@@ -4,14 +4,15 @@ const GRAVITY = 980;
 
 export default class Entity {
     velocity = new Vector2(0, 0);
-    mass = 0;
+    static = true;
+    solid = true;
 
     constructor(position) {
         this.position = position;
     }
 
     physicsUpdate(dt) {
-        if (this.mass === 0) return;
+        if (this.static) return;
         this.velocity.y -= GRAVITY * dt / 2;
         this.position.add(this.velocity.clone().mult(dt));
         this.velocity.y -= GRAVITY * dt / 2;
@@ -19,6 +20,6 @@ export default class Entity {
     }
 
     render(ctx, dt) {
-        this.texture.render(ctx, this.position, dt);
+        this.texture.render(ctx, dt, this.position);
     }
 }

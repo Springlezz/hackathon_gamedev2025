@@ -22,29 +22,25 @@ export default class Level {
 
     resolveCollision(entity1, entity2) {
         const penetrationVector = this.getPenetrationVector(entity1, entity2);
-        if (!penetrationVector || (entity1.mass === 0 && entity2.mass === 0)) return;
+        if (!penetrationVector || (entity1.static && entity2.static) || !entity1.solid || !entity2.solid) return;
 
         const collisionNormal = penetrationVector.clone().normalize();
         const relativeVelocity = entity2.velocity.clone().sub(entity1.velocity);
 
-        if (entity1.mass === 0)
-            entity2.position.sub(penetrationVector);
-        else if (entity2.mass === 0)
-            entity1.position.add(penetrationVector);
-        else {
-            const totalMass = entity1.mass + entity2.mass;
-            entity1.position.add(penetrationVector.clone().mult(entity2.mass / totalMass));
-            entity2.position.sub(penetrationVector.clone().mult(entity1.mass / totalMass));
+        let mov = penetrationVector.clone();
+        let vel = relativeVelocity.dot(collisionNormal);
+        if (!entity1.static && !entity2.static) {
+            mov.div(2);
+            vel /= 2;
         }
 
-        let velocityAlongNormal = relativeVelocity.dot(collisionNormal);
-        if (entity1.mass !== 0 && entity2.mass !== 0) velocityAlongNormal /= 2;
-
-        const impulse = collisionNormal.clone().mult(velocityAlongNormal);
-        if (entity1.mass !== 0) {
+        const impulse = collisionNormal.clone().mult(vel);
+        if (!entity1.static) {
+            entity1.position.add(mov);
             entity1.velocity.add(impulse);
         }
-        if (entity2.mass !== 0) {
+        if (!entity2.static) {
+            entity2.position.sub(mov);
             entity2.velocity.sub(impulse);
         }
     }
@@ -75,9 +71,7 @@ export default class Level {
                 this.player.position.clone().add(new Vector2(this.player.size.x / 2, -this.player.size.y / 2)),
                 new Vector2(0, -1)
             );
-            const dist = Math.min(left, right);
-            console.log(dist);
-            if (dist === 0) this.player.velocity.y = 500;
+            if (Math.min(left, right) === 0) this.player.velocity.y = 500;
         }
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');
         const left = pressed.has('ArrowLeft') || pressed.has('KeyA');
@@ -106,12 +100,6 @@ export default class Level {
     renderDebug(ctx) {
         ctx.save();
         ctx.globalAlpha = 0.75;
-        for (const entity of this.entities) {
-            const x = Math.round(entity.position.x - entity.texture.width / 2);
-            const y = Math.round(-entity.position.y - entity.texture.height / 2);
-            ctx.strokeStyle = 'red';
-            ctx.strokeRect(x + 0.5, y + 0.5, entity.texture.width - 1, entity.texture.height - 1);
-        }
         for (const entity of this.entities) {
             const x = Math.round(entity.position.x - entity.size.x / 2);
             const y = Math.round(-entity.position.y - entity.size.y / 2);

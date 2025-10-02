@@ -7,4 +7,5 @@ const texture = await Texture.load('acid');
 export default class Acid extends Entity {
     texture = texture;
     size = new Vector2(64, 32);
+    solid = false;
 }

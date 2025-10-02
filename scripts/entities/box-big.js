@@ -7,5 +7,5 @@ const texture = await Texture.load('box-big');
 export default class BoxBig extends Entity {
     texture = texture;
     size = new Vector2(128, 128);
-    mass = 2;
+    static = false;
 }
