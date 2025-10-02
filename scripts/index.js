@@ -25,7 +25,7 @@ function render() {
     ctx.save();
     ctx.translate(512, 288);
     level.render(ctx, dt);
-    // level.renderDebug(ctx);
+    level.renderDebug(ctx);
     ctx.restore();
 
     requestAnimationFrame(render);
@@ -55,9 +55,18 @@ function resize() {
 addEventListener('resize', resize);
 resize();
 
+const audio = new Promise(resolve => {
+    const audio = new Audio('/audios/theme.mp3');
+    audio.volume = 0.25;
+    audio.loop = true;
+    audio.addEventListener('canplaythrough', () => resolve(audio));
+});
+
 function start() {
     $menu.style.display = 'none';
     $canvasСontainer.style.display = 'flex';
+
+    audio.then(audio => audio.play());
 
     renderTime = Date.now();
     physicsTime = Date.now();
