@@ -7,4 +7,13 @@ const texture = await Texture.load('platform-thin');
 export default class PlatformThin extends Entity {
     texture = texture;
     size = new Vector2(64, 16);
+
+    constructor(position, vertical = false) {
+        super(position);
+        this.vertical = vertical;
+    }
+
+    render(ctx, dt) {
+        this.texture.render(ctx, dt, this.position, this.vertical ? Math.PI / 2 : 0);
+    }
 }
