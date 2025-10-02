@@ -24,35 +24,28 @@ export default class Level {
         const penetrationVector = this.getPenetrationVector(entity1, entity2);
         if (!penetrationVector || (entity1.mass === 0 && entity2.mass === 0)) return;
 
+        const collisionNormal = penetrationVector.clone().normalize();
+        const relativeVelocity = entity2.velocity.clone().sub(entity1.velocity);
+
         if (entity1.mass === 0)
             entity2.position.sub(penetrationVector);
         else if (entity2.mass === 0)
             entity1.position.add(penetrationVector);
         else {
             const totalMass = entity1.mass + entity2.mass;
-            entity1.position.add(penetrationVector.mult(entity2.mass / totalMass));
-            entity2.position.sub(penetrationVector.mult(entity1.mass / totalMass));
+            entity1.position.add(penetrationVector.clone().mult(entity2.mass / totalMass));
+            entity2.position.sub(penetrationVector.clone().mult(entity1.mass / totalMass));
         }
 
-        const collisionNormal = penetrationVector.clone().normalize();
-        const relativeVelocity = entity2.velocity.clone().sub(entity1.velocity);
-        const normalVelocity = relativeVelocity.dot(collisionNormal);
-        const tangent = relativeVelocity.clone().sub(collisionNormal.clone().mult(normalVelocity));
+        let velocityAlongNormal = relativeVelocity.dot(collisionNormal);
+        if (entity1.mass !== 0 && entity2.mass !== 0) velocityAlongNormal /= 2;
 
-        const tangentLength = tangent.length();
-        if (tangentLength > 0) tangent.div(tangentLength);
-
-        for (const entity of [entity1, entity2]) {
-            if (entity.mass === 0) continue;
-            entity.velocity.sub(collisionNormal.mult(entity.velocity.dot(collisionNormal)));
-
-            if (tangentLength > 0) {
-                const normalComponent = entity.velocity.clone().dot(collisionNormal);
-                const normalVelocity = collisionNormal.clone().mult(normalComponent);
-                const tangentVelocity = entity.velocity.clone().sub(normalVelocity);
-                tangentVelocity.mult(0.9);
-                entity.velocity = normalVelocity.add(tangentVelocity);
-            }
+        const impulse = collisionNormal.clone().mult(velocityAlongNormal);
+        if (entity1.mass !== 0) {
+            entity1.velocity.add(impulse);
+        }
+        if (entity2.mass !== 0) {
+            entity2.velocity.sub(impulse);
         }
     }
 
@@ -62,7 +55,7 @@ export default class Level {
         const t2 = entity.position.clone().add(halfSize).sub(rayOrigin).div(rayDir);
         const tMin = Math.max(Math.min(t1.x, t2.x), Math.min(t1.y, t2.y));
         const tMax = Math.min(Math.max(t1.x, t2.x), Math.max(t1.y, t2.y));
-        return tMax >= 0 && tMin <= tMax && tMin >= 0 ? tMin : Infinity;
+        return tMax >= 0 && tMin <= tMax ? Math.max(0, tMin) : Infinity;
     }
 
     raycastEntities(rayOrigin, rayDir) {
@@ -74,10 +67,16 @@ export default class Level {
 
     updateKeyboard(pressed) {
         if (pressed.has('ArrowUp') || pressed.has('KeyW') || pressed.has('Space')) {
-            const dist = this.raycastEntities(
-                this.player.position.clone().add(new Vector2(0, -this.player.size.y / 2)),
+            const left = this.raycastEntities(
+                this.player.position.clone().add(new Vector2(-this.player.size.x / 2, -this.player.size.y / 2)),
                 new Vector2(0, -1)
             );
+            const right = this.raycastEntities(
+                this.player.position.clone().add(new Vector2(this.player.size.x / 2, -this.player.size.y / 2)),
+                new Vector2(0, -1)
+            );
+            const dist = Math.min(left, right);
+            console.log(dist);
             if (dist === 0) this.player.velocity.y = 500;
         }
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');
@@ -86,13 +85,14 @@ export default class Level {
     }
 
     updatePhysics(dt) {
-        for (const entity of this.entities) {
-            entity.physicsUpdate(dt);
-        }
-        for (const entity1 of this.entities) {
-            for (const entity2 of this.entities) {
-                if (entity1 === entity2) continue;
-                this.resolveCollision(entity1, entity2);
+        for (let i = 0; i < 10; ++i) {
+            for (const entity of this.entities) {
+                entity.physicsUpdate(dt / 10);
+            }
+            for (let i = 0; i < this.entities.length; ++i) {
+                for (let j = i + 1; j < this.entities.length; ++j) {
+                    this.resolveCollision(this.entities[i], this.entities[j]);
+                }
             }
         }
     }

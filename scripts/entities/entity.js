@@ -15,6 +15,7 @@ export default class Entity {
         this.velocity.y -= GRAVITY * dt / 2;
         this.position.add(this.velocity.clone().mult(dt));
         this.velocity.y -= GRAVITY * dt / 2;
+        this.velocity.x *= 1 - 5 * dt;
     }
 
     render(ctx, dt) {
