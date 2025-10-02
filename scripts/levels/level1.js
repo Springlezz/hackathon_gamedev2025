@@ -11,6 +11,7 @@ import Level from './level.js';
 import PlatformThin from '../entities/platform-thin.js';
 import Ladder from '../entities/ladder.js';
 import Battery from '../entities/battery.js';
+import BatterySlot from '../entities/battery-slot.js';
 
 
 export default class extends Level {
@@ -30,6 +31,11 @@ export default class extends Level {
         new Door(new Vector2(4, 32)),
         new Door(new Vector2(508, 32)),
         new Battery(new Vector2(96, 64)),
-        new Ladder(new Vector2(408, 88)),
+        new BatterySlot(new Vector2(408, 88)),
+        new Platform(new Vector2(256, 67), true),
+        new Ladder(new Vector2(200, 56)),
+        new Ladder(new Vector2(104, 120)),
+        new Ladder(new Vector2(200, 176)),
+        
     ];
 }
