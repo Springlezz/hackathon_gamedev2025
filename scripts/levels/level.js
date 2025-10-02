@@ -102,11 +102,11 @@ export default class Level {
                 new Vector2(0, -1),
                 true
             );
-            if (Math.min(left, right) === 0) this.player.velocity.y = 500;
+            if (Math.min(left, right) === 0) this.player.velocity.y = 0.5;
         }
         const right = pressed.has('ArrowRight') || pressed.has('KeyD');
         const left = pressed.has('ArrowLeft') || pressed.has('KeyA');
-        this.player.velocity.x = Math.min(Math.max(this.player.velocity.x + (right - left) * 10, -100), 100);
+        this.player.velocity.x = Math.min(Math.max(this.player.velocity.x + (right - left) / 100, -0.1), 0.1);
     }
 
     updatePhysics(dt) {
