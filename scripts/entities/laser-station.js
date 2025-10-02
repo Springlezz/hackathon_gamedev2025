@@ -15,10 +15,16 @@ export default class LaserStation extends Entity {
         if (this.rayLength > 0) {
             ctx.save();
             ctx.lineWidth = 4;
-            ctx.strokeStyle = '#7B7DEC';
+            ctx.strokeStyle = '#F88';
             ctx.beginPath();
-            ctx.moveTo(this.position.x, -this.position.y - this.size.y / 2);
-            ctx.lineTo(this.position.x, -this.position.y - this.size.y / 2 - this.rayLength);
+            ctx.moveTo(this.position.x, -this.position.y + this.size.y / 2);
+            ctx.lineTo(this.position.x, -this.position.y + this.size.y / 2 + this.rayLength);
+            ctx.stroke();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#F00';
+            ctx.beginPath();
+            ctx.moveTo(this.position.x, -this.position.y + this.size.y / 2);
+            ctx.lineTo(this.position.x, -this.position.y + this.size.y / 2 + this.rayLength);
             ctx.stroke();
             ctx.restore();
         }

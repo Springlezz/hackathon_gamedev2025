@@ -7,7 +7,7 @@ const textureStay = await Texture.load('player-stay');
 const textureWalk = await AnimatedTexture.load('player-walk', 8, 80);
 
 export default class Player extends Entity {
-    size = new Vector2(17, 41);
+    size = new Vector2(17, 43);
     static = false;
     invert = false;
 
