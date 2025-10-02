@@ -31,7 +31,7 @@ export default class Texture {
                 });
                 img.addEventListener('error', reject);
             });
-            img.src = `/images/${name}.png`;
+            img.src = `/textures/${name}.png`;
             return promise;
         }
     }

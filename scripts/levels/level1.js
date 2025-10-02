@@ -36,8 +36,8 @@ function getLines(ctx, text, maxWidth) {
 
 const [backgroundTexture, jesterAvatar, jesterDialog] = await Promise.all([
     Texture.load('backgrounds/1'),
-    Texture.load('jester-normal'),
-    Texture.load('dialog'),
+    Texture.load('jester-avatar'),
+    Texture.load('jester-dialog')
 ]);
 
 export default class Level1 extends Level {

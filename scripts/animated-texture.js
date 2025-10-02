@@ -48,7 +48,7 @@ export default class AnimatedTexture {
                 });
                 img.addEventListener('error', reject);
             });
-            img.src = `/images/${name}.png`;
+            img.src = `/textures/${name}.png`;
             return promise;
         }
     }

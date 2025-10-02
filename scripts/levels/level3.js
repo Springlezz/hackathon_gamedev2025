@@ -3,7 +3,7 @@ import Texture from '../texture.js';
 import Vector2 from '../vector2.js';
 import Level from './level.js';
 
-const backgroundTexture = await Texture.load('backgrounds/2');
+const backgroundTexture = await Texture.load('backgrounds/3');
 
 export default class Level3 extends Level {
     background = backgroundTexture;
