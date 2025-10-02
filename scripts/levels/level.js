@@ -158,7 +158,7 @@ export default class Level {
     }
 
     updatePhysics(dt) {
-        if (this.isIntersecting(this.player, this.endDoor) && !this.batteries.some(b => this.#entities.includes(b))) {
+        if (this.isIntersecting(this.player, this.endDoor) && this.batterySlots.every(slot => slot.hasBattery)) {
             this.nextLevel();
             return;
         }

@@ -10,7 +10,7 @@ import Texture from '../texture.js';
 import Mirror from '../entities/mirror.js';
 import MirrorDiagonal from '../entities/mirror-diagonal.js';
 
-const backgroundTexture = await Texture.load('backgrounds/1');
+const backgroundTexture = await Texture.load('backgrounds/2');
 
 export default class extends Level {
     background = backgroundTexture;
