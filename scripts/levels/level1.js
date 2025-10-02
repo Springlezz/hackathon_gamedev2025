@@ -23,7 +23,7 @@ export default class extends Level {
     ];
     batteries = [
         {
-            battary: new Battery(new Vector2(-256, -245)),
+            battery: new Battery(new Vector2(-256, -245)),
             slot: new BatterySlot(new Vector2(316, -164))
         }
     ];
