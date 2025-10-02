@@ -19,6 +19,10 @@ export default class Level {
     batteries = [];
     #entities = [];
 
+    constructor(nextLevel) {
+        this.nextLevel = nextLevel;
+    }
+
     init() {
         this.startDoor = new Door(this.startPoint.clone());
         this.endDoor = new Door(this.endPoint.clone());
@@ -127,6 +131,11 @@ export default class Level {
     }
 
     updatePhysics(dt) {
+        if (this.isIntersecting(this.player, this.endDoor)) {
+            this.nextLevel();
+            return;
+        }
+
         for (let i = 0; i < 10; ++i) {
             for (const entity of this.#entities) {
                 entity.physicsUpdate(dt / 10);

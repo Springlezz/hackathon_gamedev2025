@@ -38,7 +38,7 @@ export default class AnimatedTexture {
     }
 
     static async load(name, framesNum, timeChange) {
-        if (textures[name]) return textures[name];
+        if (textures[name]) return new AnimatedTexture(textures[name], framesNum, timeChange);
         else {
             const img = new Image();
             const promise = new Promise((resolve, reject) => {
