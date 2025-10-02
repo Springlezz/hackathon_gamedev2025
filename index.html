@@ -8,12 +8,13 @@
         <link rel="stylesheet" href="/styles/main.css">
         <script src="/scripts/index.js" type="module" defer></script>
         <script src="/scripts/dialog-page.js" defer></script>
+        <script src="/scripts/typing-animation.js" defer></script>
     </head>
     <body>
         <main id="menu">
             <!-- Заголовок + шапка -->
             <div class="header-container">
-                <header>Джестер протокол</header>
+                <header>"Джестер" протокол</header>
                 <div id="header-buttons">
                     <a href="gallery.html" class="header-button-style">Галерея</a>
                     <a href="about.html" class="header-button-style">Об игре</a>
@@ -36,6 +37,7 @@
                         <p>Или W A S D</p>
                         <p>Взаимодействие: E</p>
                         <p>Перезапуск: R</p>
+                        <p>Общение с помощницей: нажатие левой кнопки мыши по диалоговому окну</p>
                     </div>
                 </div>
             </div>
@@ -48,6 +50,12 @@
         </main>
         <div id="canvas-container">
             <canvas id="canvas" width="1024" height="576"></canvas>
+            <div id="character">
+                <div id="character-container">
+                    <div id="jester-dialog-text">Привет!</div>
+                </div>
+                <img id="jester" src="/images/jester-normal.png" alt="Джестер">
+            </div> 
         </div>
     </body>
 </html>
