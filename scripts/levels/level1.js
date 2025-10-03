@@ -1,6 +1,6 @@
 import BatterySlot from '../entities/battery-slot.js';
 import Battery from '../entities/battery.js';
-import BorderBottomFull from '../entities/border-bottom-full.js';
+import BorderBottom from '../entities/border-bottom.js';
 import PlatformThin from '../entities/platform-thin.js';
 import Platform from '../entities/platform.js';
 import Texture from '../texture.js';
@@ -46,7 +46,7 @@ export default class Level1 extends Level {
     endPoint = new Vector2(448, -224);
 
     platforms = [
-        new BorderBottomFull(new Vector2(0, -272)),
+        new BorderBottom(new Vector2(0, -272)),
         new PlatformThin(new Vector2(-80, -64), 2),
         new Platform(new Vector2(-256, -128), 2),
         new PlatformThin(new Vector2(-80, -192), 2),

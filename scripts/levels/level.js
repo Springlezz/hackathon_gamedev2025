@@ -22,13 +22,18 @@ export default class Level {
     ];
     platforms = [];
     ladders = [];
+    acids = [];
+    levers = [];
+    batterySlots = [];
+    batteries = [];
     lazers = [];
     mirrors = [];
     sensors = [];
-    batterySlots = [];
-    batteries = [];
+    boxes = [];
     entities = [];
+    #leverStates = [];
     #mirrorPositions = [];
+    #boxedPositions = [];
 
     constructor(nextLevel) {
         this.nextLevel = nextLevel;
@@ -48,19 +53,41 @@ export default class Level {
             for (let i = 0; i < this.mirrors.length; ++i) this.mirrors[i].position = this.#mirrorPositions[i].clone();
         }
 
+        if (this.#leverStates.length !== this.levers.length) {
+            this.#leverStates = this.levers.map(lever => lever.left);
+        }
+        else {
+            for (let i = 0; i < this.levers.length; ++i) this.levers[i].left = this.#leverStates[i];
+        }
+
+        if (this.#boxedPositions.length !== this.boxes.length) {
+            this.#boxedPositions = this.boxes.map(box => box.position.clone());
+        }
+        else {
+            for (let i = 0; i < this.boxes.length; ++i) {
+                this.boxes[i].position = this.#boxedPositions[i].clone();
+                this.boxes[i].velocity = new Vector2(0, 0);
+            }
+        }
+
         this.entities = [
             ...this.#borders,
             this.startDoor,
             this.endDoor,
             ...this.platforms,
             ...this.ladders,
+            ...this.acids,
+            ...this.levers,
+            ...this.batterySlots,
+            ...this.batteries,
             ...this.lazers,
             ...this.mirrors,
             ...this.sensors,
-            ...this.batterySlots,
-            ...this.batteries,
+            ...this.boxes,
             this.player
         ];
+
+        this.updateEndDoor();
     }
 
     updateEndDoor() {
@@ -163,6 +190,18 @@ export default class Level {
                     }
                 }
             }
+
+            for (const lever of this.levers) {
+                if (!lever.pressed && this.isIntersecting(this.player, lever)) {
+                    lever.left = !lever.left;
+                    lever.pressed = true;
+                }
+            }
+        }
+        else {
+            for (const lever of this.levers) {
+                lever.pressed = false;
+            }
         }
     }
 
@@ -194,6 +233,11 @@ export default class Level {
             return;
         }
 
+        if (this.acids.some(acid => this.entities.includes(acid) && this.isIntersecting(this.player, acid))) {
+            this.init();
+            return;
+        }
+
         for (let i = 0; i < 10; ++i) {
             for (const entity of this.entities) {
                 entity.physicsUpdate(dt / 10);
@@ -221,7 +265,7 @@ export default class Level {
             new Vector2(0, -1),
             filter
         );
-        this.player.onGround = Math.min(leftDist, rightDist) === 0;
+        this.player.onGround = Math.abs(Math.min(leftDist, rightDist)) < 0.01;
 
         this.player.onLadder = false;
         for (const ladder of this.ladders) {

@@ -1,4 +1,4 @@
-import BorderBottomFull from '../entities/border-bottom-full.js';
+import BorderBottom from '../entities/border-bottom.js';
 import Ladder from '../entities/ladder.js';
 import Laser from '../entities/laser.js';
 import Mirror from '../entities/mirror.js';
@@ -20,7 +20,7 @@ export default class Level2 extends Level {
     lazerCap = new PlatformThin(new Vector2(-416, 128), 2); // убирающееся панель
 
     platforms = [
-        new BorderBottomFull(new Vector2(0, -272)),
+        new BorderBottom(new Vector2(0, -272)),
         new Platform(new Vector2(-192, 48), 2), // справа
         new Platform(new Vector2(192, -16), 2), // слева
         this.lazerCap
