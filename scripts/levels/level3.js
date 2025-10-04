@@ -45,13 +45,13 @@ export default class Level3 extends Level {
         this.platform2
     ];
     acids = [
-        new Acid(new Vector2(-64, -273)),
-        new Acid(new Vector2(64, -273)),
-        new Acid(new Vector2(320, -273)),
         this.acidCorner1,
         this.acidFlow1,
         this.acidCorner2,
-        this.acidFlow2
+        this.acidFlow2,
+        new Acid(new Vector2(-64, -273)),
+        new Acid(new Vector2(64, -273)),
+        new Acid(new Vector2(320, -273)),
     ];
     levers = [
         this.lever1,

@@ -1,8 +1,10 @@
 import Texture from '../texture.js';
 import Vector2 from '../vector2.js';
 import Entity from './entity.js';
+// import AnimatedTexture from '../animated-texture.js';
 
 const texture = await Texture.load('acid-flow');
+// const texture = await AnimatedTexture.load('acid-flow2', 64, 250);
 
 export default class AcidFlow extends Entity {
     texture = texture;
