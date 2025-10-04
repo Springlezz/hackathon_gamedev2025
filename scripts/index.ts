@@ -70,7 +70,7 @@ resize();
 const soundTheme = Sound.load('theme', 1, true);
 
 async function start() {
-    await loadLevel(3);
+    await loadLevel(1);
 
     $menu.style.display = 'none';
     $canvasСontainer.style.display = 'flex';
