@@ -9,7 +9,6 @@
 - Планируется несколько концовок
 - Игрок решает задачи и взаимодействует с объектами
 - Помощница Джестер добавляет юмор и непредсказуемость
-- 
 
 <img src="static/screenshots/screen.png" width="700" alt="Демонстрация игры">
 <img src="static/screenshots/gameplay.gif" width="700" alt="Демонстрация игры">
@@ -28,7 +27,6 @@
 - **Верстка:** HTML + CSS  
 - **Frontend и backend:** JavaScript (логика и взаимодействие)  
 - **Анимация и графика:** CSS + Canvas
-- **Звук:** самодельный аудио-движок
 
 <img src="static/screenshots/structure.gif" width="300" alt="Демонстрация игры">
 ---
