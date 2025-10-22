@@ -8,8 +8,7 @@ export default class AnimatedTexture {
     height: number;
     framesNum: number;
     timeChange: number;
-    time = 0;
-    frame = 0;
+    protected time = 0;
 
     constructor(image: HTMLImageElement, framesNum: number, timeChange: number) {
         this.image = image;
@@ -20,27 +19,22 @@ export default class AnimatedTexture {
     }
 
     render(ctx: CanvasRenderingContext2D, dt: number, position: Vector2, rotation = 0, invertX = 1, invertY = 1) {
-        ctx.save();
+        this.time += dt;
+        const frame = ((this.time / this.timeChange | 0) % this.framesNum + this.framesNum) % this.framesNum;
+        const frameWidth = this.width / this.framesNum;
+        if (frame > this.framesNum - 1 || frame < 0) console.error(frame, this.framesNum, this.time);
 
+        ctx.save();
         ctx.translate(position.x, -position.y);
         ctx.rotate(rotation);
         ctx.scale(invertX, invertY);
-
-        this.time += dt;
-        while (this.time >= this.timeChange) {
-            this.time -= this.timeChange;
-            this.frame = (this.frame + 1) % this.framesNum;
-        }
-
-        const frameWidth = this.width / this.framesNum;
         ctx.drawImage(
             this.image,
-            this.frame * frameWidth, 0,
+            frame * frameWidth, 0,
             frameWidth, this.height,
             -frameWidth / 2, -this.height / 2,
             frameWidth, this.height
         );
-
         ctx.restore();
     }
 

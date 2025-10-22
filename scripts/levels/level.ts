@@ -178,9 +178,9 @@ export default class Level {
         if (pressed.has('KeyR')) return this.init();
 
         if (pressed.has('ArrowUp') || pressed.has('KeyW') || pressed.has('Space')) {
-            if (this.player.onLadder) this.player.velocity.y = 0.075;
+            if (this.player.onLadder) this.player.velocity.y = this.player.climbSpeed;
             else if (this.player.onGround) {
-                this.player.velocity.y = 0.42;
+                this.player.velocity.y = this.player.jumpForce;
                 soundJump.play();
             }
         }
